@@ -2,7 +2,7 @@
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
-//let live = Target.Dependency.product(name: "LiveTex/sdk-ios")
+
 let package = Package(
     name: "LivetexUICore",
     defaultLocalization: "en",
@@ -24,7 +24,7 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "LivetexUICore",
-            dependencies: ["MessageKit", "Kingfisher", "LifetexCore"],
+            dependencies: ["MessageKit", "Kingfisher"],
             path: "Sources"),
     ]
 )
