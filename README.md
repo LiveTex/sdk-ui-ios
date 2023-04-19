@@ -1,2 +1,2 @@
-# sdk-ui-ios
-sdk-ui-ios
+# LivetexUICore
+    LivetexUICore
