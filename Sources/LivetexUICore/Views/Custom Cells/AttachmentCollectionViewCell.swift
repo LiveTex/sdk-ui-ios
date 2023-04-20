@@ -6,7 +6,7 @@
 //  Copyright © 2023 Livetex. All rights reserved.
 //
 
-//import MessageKit
+import MessageKit
 import UIKit
 
 internal class AttachmentCollectionViewCell: MessageContentCell {

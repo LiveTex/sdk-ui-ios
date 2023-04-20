@@ -7,7 +7,7 @@
 //
 
 import Foundation
-//import LiveTexSDKUI//MessageKit
+import MessageKit
 import UIKit
 
 public class AttachmentFileSizeCalculator: MessageSizeCalculator {

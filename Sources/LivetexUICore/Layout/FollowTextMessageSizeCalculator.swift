@@ -7,7 +7,7 @@
 //
 
 import UIKit
-//import MessageKit
+import MessageKit
 
 public class FollowTextMessageSizeCalculator: CustomTextMessageSizeCalculator {
 

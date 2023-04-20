@@ -7,15 +7,15 @@
 //
 
 import UIKit
-//import MessageKit
-//import InputBarAccessoryView
-//import Kingfisher
+import MessageKit
+import InputBarAccessoryView
+import Kingfisher
 import SafariServices
-//import BFRImageViewer
-//import LivetexCore
+import BFRImageViewer
+import LivetexCore
 import UniformTypeIdentifiers
 
-public class ChatViewController: MessagesViewController, InputBarAccessoryViewDelegate {
+ class ChatViewController: MessagesViewController, InputBarAccessoryViewDelegate {
 
     private struct Appearance {
         static let activityIndicatorRect = CGRect(x: 0, y: 0, width: 20, height: 20)
@@ -24,9 +24,8 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
     private struct Constants {
         static let debouncedFunctionTimeInterval: TimeInterval = 2
     }
-    public init () {
 
-    }
+
 
     // MARK: - Properties
 
@@ -41,7 +40,7 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
     private var shouldShowInput: Bool? = true
 
 
-    override var canResignFirstResponder: Bool {
+     override var canResignFirstResponder: Bool {
         true
     }
 

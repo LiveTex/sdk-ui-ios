@@ -7,9 +7,9 @@
 //
 
 import UIKit
-//import MessageKit
+import MessageKit
 
-public class CustomMessagesFlowLayout: MessagesCollectionViewFlowLayout {
+class CustomMessagesFlowLayout: MessagesCollectionViewFlowLayout {
 
     private lazy var followTextMessageSizeCalculator = FollowTextMessageSizeCalculator(layout: self)
     private lazy var customTextMessageSizeCalculator = CustomTextMessageSizeCalculator(layout: self)

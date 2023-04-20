@@ -7,8 +7,8 @@
 //
 
 import UIKit
-//import MessageKit
-//import LivetexCore
+import MessageKit
+import LivetexCore
 
 public class ChatViewModel {
 
@@ -52,10 +52,10 @@ public class ChatViewModel {
                                                name: UIApplication.didEnterBackgroundNotification,
                                                object: nil)
 
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(applicationDidRegisterForRemoteNotifications(_:)),
-                                               name: UIApplication.didRegisterForRemoteNotifications,
-                                               object: nil)
+//        NotificationCenter.default.addObserver(self,
+//                                               selector: #selector(applicationDidRegisterForRemoteNotifications(_:)),
+//                                               name: UIApplication.didRegisterForRemoteNotifications,
+//                                               object: nil)
     }
 
     // MARK: - Configuration
