@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/onevcat/Kingfisher.git",
       "state" : {
-        "revision" : "af4be924ad984cf4d16f4ae4df424e79a443d435",
-        "version" : "7.6.2"
+        "revision" : "d06df9adf50ed8cde5786d935836a5f445f780ba",
+        "version" : "6.3.1"
       }
     },
     {
@@ -68,8 +68,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pinterest/PINRemoteImage",
       "state" : {
-        "revision" : "611d8ab1c6937bcdfd9d59a967716b0370a332be",
-        "version" : "3.0.3"
+        "branch" : "master",
+        "revision" : "18637e4414d77fbc95cd7d499179a9880e9a78d8"
       }
     },
     {
@@ -77,8 +77,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/LiveTex/sdk-ios",
       "state" : {
-        "branch" : "develop",
-        "revision" : "bf24caae70debe15f059421c6ef113e15b1374c1"
+        "branch" : "master",
+        "revision" : "180445d5a7e44f4bf00648ae7722638f472e5e30"
       }
     }
   ],
