@@ -9,7 +9,7 @@
 import UIKit
 import MessageKit
 
-public class FollowTextMessageSizeCalculator: CustomTextMessageSizeCalculator {
+class FollowTextMessageSizeCalculator: CustomTextMessageSizeCalculator {
 
     private let followMessageViewSize = CGSize(width: 0, height: 20)
 

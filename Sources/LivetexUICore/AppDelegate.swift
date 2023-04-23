@@ -8,14 +8,14 @@
 //
 //import UIKit
 //
-//@UIApplicationMain
+////@UIApplicationMain
 //public class AppDelegate: UIResponder, UIApplicationDelegate {
 //
-//    var window: UIWindow?
+//    public var window: UIWindow?
 //
 //    private let options: UNAuthorizationOptions = [.alert, .badge, .sound]
 //
-//    func application(_ application: UIApplication,
+//    public func application(_ application: UIApplication,
 //                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 //        UNUserNotificationCenter.current().requestAuthorization(options: options) { granted, error in
 //            guard granted else {
@@ -31,19 +31,19 @@
 //        return true
 //    }
 //
-//    func applicationDidBecomeActive(_ application: UIApplication) {
+//    public func applicationDidBecomeActive(_ application: UIApplication) {
 //        application.applicationIconBadgeNumber = 0
 //    }
 //
 //    // MARK: - Remote Notifications
 //
-//    func application(_ application: UIApplication,
+//    public func application(_ application: UIApplication,
 //                     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
 //        NotificationCenter.default.post(name: UIApplication.didRegisterForRemoteNotifications,
 //                                        object: deviceToken.hexString)
 //    }
 //
-//    func application(_ application: UIApplication,
+//   public func application(_ application: UIApplication,
 //                     didFailToRegisterForRemoteNotificationsWithError error: Error) {
 //        print("Failed to register for notifications: \(error.localizedDescription)")
 //        NotificationCenter.default.post(name: UIApplication.didRegisterForRemoteNotifications, object: nil)

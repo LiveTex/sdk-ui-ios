@@ -8,15 +8,15 @@
 
 import UIKit
 
-final class DialogueStateView: UIView {
-
-    private struct Appearance {
+public class DialogueStateView: UIView {
+    
+    struct Appearance {
         static let titleLabelFont: UIFont = .systemFont(ofSize: 17, weight: .semibold)
         static let subtitleLabelFont: UIFont = .systemFont(ofSize: 13)
-
+        
         static let connectionViewText: String = "connecting"
     }
-
+    
     var title: String? {
         get {
             return titleLabel.text
@@ -28,7 +28,7 @@ final class DialogueStateView: UIView {
             }
         }
     }
-
+    
     var subtitle: String? {
         get {
             return subtitleLabel.text
@@ -41,16 +41,16 @@ final class DialogueStateView: UIView {
             }
         }
     }
-
-    private lazy var titleLabel: UILabel = {
+    
+    lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.font = Appearance.titleLabelFont
         label.textAlignment = .center
         label.textColor = .black
         return label
     }()
-
-    private lazy var subtitleLabel: UILabel = {
+    
+    lazy var subtitleLabel: UILabel = {
         let label = UILabel()
         label.font = Appearance.subtitleLabelFont
         label.textAlignment = .center
@@ -58,46 +58,46 @@ final class DialogueStateView: UIView {
         label.isHidden = true
         return label
     }()
-
-    private lazy var connectionView: ConnectionView = {
+    
+    lazy var connectionView: ConnectionView = {
         let connectionView = ConnectionView()
         connectionView.translatesAutoresizingMaskIntoConstraints = false
-
+        
         return connectionView
     }()
-
+    
     // MARK: - Initialization
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-
+        
         addSubview(titleLabel)
         addSubview(subtitleLabel)
         addSubview(connectionView)
-
+        
         connectionView.setTitle(Appearance.connectionViewText)
         setConnectionInProgress(withKind: .connect)
     }
-
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     // MARK: - Layout
-
-    override func layoutSubviews() {
+    
+    public override func layoutSubviews() {
         super.layoutSubviews()
-
+        
         titleLabel.frame = CGRect(x: 0,
                                   y: 0,
                                   width: bounds.width,
                                   height: subtitleLabel.isHidden ? bounds.height : titleLabel.font.lineHeight)
-
+        
         subtitleLabel.frame = CGRect(x: 0,
                                      y: titleLabel.frame.maxY,
                                      width: bounds.width,
                                      height: subtitleLabel.font.lineHeight)
-
+        
         connectionView.frame = CGRect(x: 0,
                                       y: 0,
                                       width: bounds.width,
@@ -106,12 +106,12 @@ final class DialogueStateView: UIView {
 }
 
 extension DialogueStateView {
-
+    
     func setConnectionInProgress(withKind kind: LoadingKind) {
         connectionView.isHidden = false
         connectionView.startActivityIndicator(withKind: kind)
     }
-
+    
     func setConnectedSuccessfully() {
         connectionView.isHidden = true
         connectionView.stopActivityIndicator()

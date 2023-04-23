@@ -41,7 +41,8 @@ public class ChatViewModel {
 
     // MARK: - Initialization
 
-    init() {
+  public init() {
+
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(applicationWillEnterForeground),
                                                name: UIApplication.willEnterForegroundNotification,
@@ -52,15 +53,15 @@ public class ChatViewModel {
                                                name: UIApplication.didEnterBackgroundNotification,
                                                object: nil)
 
-//        NotificationCenter.default.addObserver(self,
-//                                               selector: #selector(applicationDidRegisterForRemoteNotifications(_:)),
-//                                               name: UIApplication.didRegisterForRemoteNotifications,
-//                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(applicationDidRegisterForRemoteNotifications(_:)),
+                                               name: UIApplication.didFinishLaunchingNotification,
+                                               object: nil)
     }
 
     // MARK: - Configuration
 
-    private func requestAuthentication(deviceToken: String) {
+    public func requestAuthentication(deviceToken: String) {
         let loginService = LivetexAuthService(token: settings.visitorToken.map { .system($0) },
                                               deviceToken: deviceToken)
 
@@ -76,7 +77,7 @@ public class ChatViewModel {
         }
     }
 
-    private func startSession(token: SessionToken) {
+    public func startSession(token: SessionToken) {
         settings.visitorToken = token.visitorToken
         sessionService = LivetexSessionService(token: token)
         sessionService?.onEvent = { [weak self] event in
@@ -106,22 +107,22 @@ public class ChatViewModel {
 
     // MARK: - Application Lifecycle
 
-    @objc private func applicationDidEnterBackground() {
+    @objc public func applicationDidEnterBackground() {
         sessionService?.disconnect()
     }
 
-    @objc private func applicationWillEnterForeground() {
+    @objc public func applicationWillEnterForeground() {
         sessionService?.connect()
     }
 
-    @objc private func applicationDidRegisterForRemoteNotifications(_ notification: Notification) {
+    @objc public func applicationDidRegisterForRemoteNotifications(_ notification: Notification) {
         let deviceToken = notification.object as? String
         requestAuthentication(deviceToken: deviceToken ?? "")
     }
 
     // MARK: - Session
 
-    func sendEvent(_ event: ClientEvent) {
+   public func sendEvent(_ event: ClientEvent) {
         let isConnected = sessionService?.isConnected ?? false
         if !isConnected {
             sessionService?.connect()
@@ -132,7 +133,7 @@ public class ChatViewModel {
         updateMessageIfNeeded(event: event)
     }
 
-    private func didReceive(event: ServiceEvent) {
+    public func didReceive(event: ServiceEvent) {
         switch event {
         case let .result(result):
             print(result)
@@ -152,7 +153,7 @@ public class ChatViewModel {
         }
     }
 
-    private func updateMessageIfNeeded(event: ClientEvent) {
+    public func updateMessageIfNeeded(event: ClientEvent) {
         guard case .buttonPressed = event.content,
               let index = messages.lastIndex(where: { $0.keyboard != nil }),
               !messages.isEmpty, let keyboard = messages[index].keyboard else {
@@ -167,7 +168,7 @@ public class ChatViewModel {
         onMessageUpdated?(index)
     }
 
-    func isPreviousMessageSameDate(at index: Int) -> Bool {
+   public func isPreviousMessageSameDate(at index: Int) -> Bool {
         guard index - 1 >= 0 else {
             return false
         }
@@ -177,7 +178,7 @@ public class ChatViewModel {
         return Calendar.current.isDate(currentDate, inSameDayAs: previousDate)
     }
 
-    private func convertMessages(_ messages: [Message]) -> [ChatMessage] {
+     func convertMessages(_ messages: [Message]) -> [ChatMessage] {
         return messages.map {
             let kind: MessageKind
             let sender = $0.creator.isVisitor ? self.user : Recipient(senderId: "",
@@ -211,7 +212,7 @@ public class ChatViewModel {
         }
     }
 
-    private func messageHistoryReceived(items: [Message]) {
+    public func messageHistoryReceived(items: [Message]) {
         guard !items.isEmpty else {
             isCanLoadMore = false
             return
@@ -235,3 +236,4 @@ public class ChatViewModel {
     }
 
 }
+

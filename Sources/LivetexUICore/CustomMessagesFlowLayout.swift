@@ -10,16 +10,16 @@ import UIKit
 import MessageKit
 
 class CustomMessagesFlowLayout: MessagesCollectionViewFlowLayout {
-
+    
     private lazy var followTextMessageSizeCalculator = FollowTextMessageSizeCalculator(layout: self)
     private lazy var customTextMessageSizeCalculator = CustomTextMessageSizeCalculator(layout: self)
     private lazy var systemMessageSizeCalculator = SystemMessageSizeCalculator(layout: self)
     private lazy var attachmentFileSizeCalculator = AttachmentFileSizeCalculator(layout: self)
-
+    
     override class var layoutAttributesClass: AnyClass {
         return CustomMessagesCollectionViewLayoutAttributes.self
     }
-
+    
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         guard let attributesArray = super.layoutAttributesForElements(in: rect) as? [CustomMessagesCollectionViewLayoutAttributes] else {
             return nil
@@ -30,7 +30,7 @@ class CustomMessagesFlowLayout: MessagesCollectionViewFlowLayout {
         }
         return attributesArray
     }
-
+    
     override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
         guard let attributes = super.layoutAttributesForItem(at: indexPath) as? CustomMessagesCollectionViewLayoutAttributes else {
             return nil
@@ -41,7 +41,7 @@ class CustomMessagesFlowLayout: MessagesCollectionViewFlowLayout {
         }
         return attributes
     }
-
+    
     override func cellSizeCalculatorForItem(at indexPath: IndexPath) -> CellSizeCalculator {
         if isSectionReservedForTypingIndicator(indexPath.section) {
             return typingIndicatorSizeCalculator
@@ -57,7 +57,7 @@ class CustomMessagesFlowLayout: MessagesCollectionViewFlowLayout {
             guard let type = value as? CustomType else {
                 return super.cellSizeCalculatorForItem(at: indexPath)
             }
-
+            
             switch type {
             case .system:
                 return systemMessageSizeCalculator
@@ -68,7 +68,7 @@ class CustomMessagesFlowLayout: MessagesCollectionViewFlowLayout {
             return super.cellSizeCalculatorForItem(at: indexPath)
         }
     }
-
+    
     override func messageSizeCalculators() -> [MessageSizeCalculator] {
         var calculators = super.messageSizeCalculators()
         calculators.append(customTextMessageSizeCalculator)
@@ -76,5 +76,5 @@ class CustomMessagesFlowLayout: MessagesCollectionViewFlowLayout {
         calculators.append(followTextMessageSizeCalculator)
         return calculators
     }
-
+    
 }

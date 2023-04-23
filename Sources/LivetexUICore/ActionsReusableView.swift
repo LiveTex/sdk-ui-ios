@@ -10,7 +10,7 @@ import UIKit
 import MessageKit
 import LivetexCore
 
-class ActionsReusableView: MessageReusableView {
+ class ActionsReusableView: MessageReusableView {
 
     var onAction: ((Button) -> Void)?
 
@@ -22,7 +22,7 @@ class ActionsReusableView: MessageReusableView {
 
     // MARK: - Lifecycle
 
-    override func prepareForReuse() {
+      override func prepareForReuse() {
         super.prepareForReuse()
 
         subviews.forEach { $0.removeFromSuperview() }
@@ -51,7 +51,7 @@ class ActionsReusableView: MessageReusableView {
 
     // MARK: - Layout
 
-    override func layoutSubviews() {
+       override func layoutSubviews() {
         super.layoutSubviews()
 
         var offset: CGFloat = 0

@@ -9,7 +9,7 @@
 import UIKit
 import MessageKit
 
-public class CustomMessagesCollectionViewLayoutAttributes: MessagesCollectionViewLayoutAttributes {
+ class CustomMessagesCollectionViewLayoutAttributes: MessagesCollectionViewLayoutAttributes {
 
     var timeLabelFont: UIFont = .systemFont(ofSize: 10, weight: .medium)
     var timeLabelSize: CGSize = .zero
@@ -18,7 +18,7 @@ public class CustomMessagesCollectionViewLayoutAttributes: MessagesCollectionVie
     var statusImageSize = CGSize(width: 16, height: 10)
     var followMessageViewInsets = UIEdgeInsets(top: 4, left: 15, bottom: 0, right: 15)
 
-  public override func copy(with zone: NSZone? = nil) -> Any {
+   override func copy(with zone: NSZone? = nil) -> Any {
         // swiftlint:disable force_cast
         let copy = super.copy(with: zone) as! CustomMessagesCollectionViewLayoutAttributes
         copy.timeLabelSize = timeLabelSize

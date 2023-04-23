@@ -15,13 +15,13 @@ import BFRImageViewer
 import LivetexCore
 import UniformTypeIdentifiers
 
- class ChatViewController: MessagesViewController, InputBarAccessoryViewDelegate {
+public class ChatViewController: MessagesViewController, InputBarAccessoryViewDelegate {
 
-    private struct Appearance {
+    public struct Appearance {
         static let activityIndicatorRect = CGRect(x: 0, y: 0, width: 20, height: 20)
     }
 
-    private struct Constants {
+    public struct Constants {
         static let debouncedFunctionTimeInterval: TimeInterval = 2
     }
 
@@ -29,35 +29,35 @@ import UniformTypeIdentifiers
 
     // MARK: - Properties
 
-    private lazy var viewModel = ChatViewModel()
+    public lazy var viewModel = ChatViewModel()
     
-    private lazy var typingFunction = DebouncedFunction(timeInterval: Constants.debouncedFunctionTimeInterval) { [weak self] in
+    public lazy var typingFunction = DebouncedFunction(timeInterval: Constants.debouncedFunctionTimeInterval) { [weak self] in
         self?.setTypingIndicatorViewHidden(true, animated: true)
     }
 
     // Local variable showing input state
     // onDialogStateReceived dependent
-    private var shouldShowInput: Bool? = true
+    public var shouldShowInput: Bool? = true
 
 
-     override var canResignFirstResponder: Bool {
+    public override var canResignFirstResponder: Bool {
         true
     }
 
     // MARK: - Views
 
-    private lazy var dialogueStateView: DialogueStateView = {
+    public lazy var dialogueStateView: DialogueStateView = {
         let dialogueStateView = DialogueStateView()
         dialogueStateView.translatesAutoresizingMaskIntoConstraints = false
 
         return dialogueStateView
     }()
     
-    private lazy var avatarView = OperatorAvatarView()
-    private lazy var estimationView = EstimationView()
-    private lazy var messageInputBarView = MessageInputBarView()
+    public lazy var avatarView = OperatorAvatarView()
+    public lazy var estimationView = EstimationView()
+    public lazy var messageInputBarView = MessageInputBarView()
 
-    private lazy var barButton: UIBarButtonItem = {
+    public lazy var barButton: UIBarButtonItem = {
         let activityIndicator = UIActivityIndicatorView(frame: Appearance.activityIndicatorRect)
 
         return UIBarButtonItem(customView: activityIndicator)
@@ -68,7 +68,6 @@ import UniformTypeIdentifiers
  public override func viewDidLoad() {
         configureCollectionView()
         super.viewDidLoad()
-
         configureInputBar()
         configureViewModel()
         configureNavigationItem()
@@ -85,7 +84,7 @@ import UniformTypeIdentifiers
 
     // MARK: - Configuration
 
-    private func layoutEstimationView() {
+    public func layoutEstimationView() {
         let offset = viewModel.isEmployeeEstimated ? EstimationView.viewHeight : 0
         estimationView.frame = CGRect(x: view.safeAreaLayoutGuide.layoutFrame.minX,
                                       y: view.safeAreaLayoutGuide.layoutFrame.minY - offset,
@@ -96,7 +95,7 @@ import UniformTypeIdentifiers
         messagesCollectionView.scrollIndicatorInsets.top = viewModel.isEmployeeEstimated ? 0 : EstimationView.viewHeight
     }
 
-    private func configureEstimationView() {
+    public func configureEstimationView() {
         view.addSubview(estimationView)
 
         estimationView.onEstimateAction = { [weak self] action in
@@ -104,12 +103,12 @@ import UniformTypeIdentifiers
         }
     }
 
-    private func configureNavigationItem() {
+    public func configureNavigationItem() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: avatarView)
         navigationItem.titleView = dialogueStateView
     }
 
-    private func configureInputBar() {
+    public func configureInputBar() {
         messageInputBarView.delegate = self
 
         messageInputBarView.onAttachmentButtonTapped = { [weak self] in
@@ -118,17 +117,17 @@ import UniformTypeIdentifiers
         self.inputBarType = .custom(messageInputBarView)
     }
 
-    private func setConnectingState() {
+    public func setConnectingState() {
         dialogueStateView.setConnectionInProgress(withKind: .connect)
     }
 
-    private func setConnectedState() {
+    public func setConnectedState() {
         dialogueStateView.setConnectedSuccessfully()
     }
 
     // MARK: - ViewModel binding
 
-    private func configureViewModel() {
+    public func configureViewModel() {
         viewModel.onWebsocketStateChanged = { [weak self] isConnected in
             isConnected ?
             self?.setConnectedState() :
@@ -254,7 +253,7 @@ import UniformTypeIdentifiers
         }
     }
 
-    private func configureCollectionView() {
+    public func configureCollectionView() {
         messagesCollectionView = MessagesCollectionView(frame: .zero, collectionViewLayout: CustomMessagesFlowLayout())
         messagesCollectionView.register(TextMessageCollectionViewCell.self)
         messagesCollectionView.register(SystemMessageCollectionViewCell.self)
@@ -296,7 +295,7 @@ import UniformTypeIdentifiers
 
     // MARK: - Send attachment
 
-    private func sendAttachment() {
+    public func sendAttachment() {
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         let imagePickerController = UIImagePickerController()
         imagePickerController.delegate = self
@@ -332,7 +331,7 @@ import UniformTypeIdentifiers
 
     // MARK: - Send message
 
-    func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
+   public func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
         let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
         messageInputBarView.inputTextView.text = ""
         messageInputBarView.invalidatePlugins()
@@ -346,7 +345,7 @@ import UniformTypeIdentifiers
         }
     }
 
-    func inputBar(_ inputBar: InputBarAccessoryView, textViewTextDidChangeTo text: String) {
+    public func inputBar(_ inputBar: InputBarAccessoryView, textViewTextDidChangeTo text: String) {
         guard !text.isEmpty else {
             return
         }
@@ -357,7 +356,7 @@ import UniformTypeIdentifiers
 
     // MARK: - UICollectionViewDelegate
 
-    override func collectionView(_ collectionView: UICollectionView,
+    public override func collectionView(_ collectionView: UICollectionView,
                                  cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let messagesDataSource = messagesCollectionView.messagesDataSource else {
             fatalError("Ouch. nil data source for messages")
@@ -407,7 +406,7 @@ import UniformTypeIdentifiers
 
     // MARK: - UIScrollViewDelegate
 
-    override func collectionView(_ collectionView: UICollectionView,
+    public override func collectionView(_ collectionView: UICollectionView,
                                  willDisplay cell: UICollectionViewCell,
                                  forItemAt indexPath: IndexPath) {
         if indexPath.section == 0, viewModel.isContentLoaded, !viewModel.isLoadingMore {
@@ -419,9 +418,9 @@ import UniformTypeIdentifiers
 
 // MARK: - Helper methods
 
-private extension ChatViewController {
+ extension ChatViewController {
 
-    func handleInputStateIfNeeded(shouldShowInput: Bool?) {
+     public  func handleInputStateIfNeeded(shouldShowInput: Bool?) {
         if let shouldShowInput = shouldShowInput {
             if shouldShowInput {
                 becomeFirstResponder()
@@ -431,7 +430,7 @@ private extension ChatViewController {
         }
     }
 
-    func hideInputAccessoryView() {
+     public  func hideInputAccessoryView() {
         guard let firstResponder = UIResponder.first else {
             return
         }
@@ -446,19 +445,19 @@ private extension ChatViewController {
 
 extension ChatViewController: MessagesDataSource {
 
-    var currentSender: SenderType {
+       public var currentSender: SenderType {
         return viewModel.user
     }
 
-    func numberOfSections(in messagesCollectionView: MessagesCollectionView) -> Int {
+      public func numberOfSections(in messagesCollectionView: MessagesCollectionView) -> Int {
         return viewModel.messages.count
     }
 
-    func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageType {
+    public func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageType {
         return viewModel.messages[indexPath.section]
     }
 
-    func cellTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
+    public func cellTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
         guard viewModel.isPreviousMessageSameDate(at: indexPath.section) else {
             return NSAttributedString(string: DateFormatter.relativeDate.string(from: message.sentDate),
                                       attributes: [.font: UIFont.boldSystemFont(ofSize: 10),
@@ -468,12 +467,12 @@ extension ChatViewController: MessagesDataSource {
         return nil
     }
 
-    func messageTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
+    public func messageTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
         return NSAttributedString(string: message.sender.displayName,
                                   attributes: [.font: UIFont.preferredFont(forTextStyle: .caption1)])
     }
 
-    func messageFooterView(for indexPath: IndexPath,
+    public func messageFooterView(for indexPath: IndexPath,
                            in messagesCollectionView: MessagesCollectionView) -> MessageReusableView {
         let message = viewModel.messages[indexPath.section]
         guard let keyboard = message.keyboard else {
@@ -496,7 +495,7 @@ extension ChatViewController: MessagesDataSource {
 extension ChatViewController: UIContextMenuInteractionDelegate {
     
     @available(iOS 13.0, *)
-    func contextMenuInteraction(_ interaction: UIContextMenuInteraction,
+    public func contextMenuInteraction(_ interaction: UIContextMenuInteraction,
                                 configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         let point = interaction.location(in: messagesCollectionView)
         guard let indexPath = messagesCollectionView.indexPathForItem(at: point),
@@ -532,23 +531,24 @@ extension ChatViewController: UIContextMenuInteractionDelegate {
 
 extension ChatViewController: MessageCellDelegate {
 
-    func didSelectURL(_ url: URL) {
+    public func didSelectURL(_ url: URL) {
         let safariViewController = SFSafariViewController(url: url)
         present(safariViewController, animated: true)
     }
 
-    func didTapImage(in cell: MessageCollectionViewCell) {
+    public  func didTapImage(in cell: MessageCollectionViewCell) {
         guard let indexPath = messagesCollectionView.indexPath(for: cell),
               case let .photo(item) = viewModel.messages[indexPath.section].kind, let url = item.url,
               let imageSource = BFRBackLoadedImageSource(initialImage: item.placeholderImage, hiResURL: url),
-              let viewController = BFRImageViewController(imageSource: [imageSource]) else {
+              let viewController = BFRImageViewController(imageSource: [imageSource])
+        else {
                   return
               }
 
         present(viewController, animated: true)
     }
 
-    func didTapMessage(in cell: MessageCollectionViewCell) {
+    public func didTapMessage(in cell: MessageCollectionViewCell) {
         guard let indexPath = messagesCollectionView.indexPath(for: cell) else { return }
         guard let messagesDataSource = messagesCollectionView.messagesDataSource else { return }
         let message = messagesDataSource.messageForItem(at: indexPath, in: messagesCollectionView)
@@ -586,7 +586,7 @@ extension ChatViewController: MessageCellDelegate {
 
 extension ChatViewController: MessagesDisplayDelegate {
 
-    func backgroundColor(for message: MessageType,
+    public func backgroundColor(for message: MessageType,
                          at indexPath: IndexPath,
                          in messagesCollectionView: MessagesCollectionView) -> UIColor {
         switch message.kind {
@@ -597,19 +597,19 @@ extension ChatViewController: MessagesDisplayDelegate {
         }
     }
 
-    func enabledDetectors(for message: MessageType,
+    public func enabledDetectors(for message: MessageType,
                           at indexPath: IndexPath,
                           in messagesCollectionView: MessagesCollectionView) -> [DetectorType] {
         return [.url]
     }
 
-    func textColor(for message: MessageType,
+    public  func textColor(for message: MessageType,
                    at indexPath: IndexPath,
                    in messagesCollectionView: MessagesCollectionView) -> UIColor {
         return isFromCurrentSender(message: message) ? .white : .darkText
     }
 
-    func detectorAttributes(for detector: DetectorType,
+    public func detectorAttributes(for detector: DetectorType,
                             and message: MessageType,
                             at indexPath: IndexPath) -> [NSAttributedString.Key : Any] {
         return [.foregroundColor: isFromCurrentSender(message: message) ? UIColor.white : UIColor.black,
@@ -617,13 +617,13 @@ extension ChatViewController: MessagesDisplayDelegate {
                 .underlineColor: isFromCurrentSender(message: message) ? UIColor.white : UIColor.black]
     }
 
-    func messageStyle(for message: MessageType,
+    public func messageStyle(for message: MessageType,
                       at indexPath: IndexPath,
                       in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
         return .bubble
     }
 
-    func configureMediaMessageImageView(_ imageView: UIImageView,
+    public func configureMediaMessageImageView(_ imageView: UIImageView,
                                         for message: MessageType,
                                         at indexPath: IndexPath,
                                         in messagesCollectionView: MessagesCollectionView) {
@@ -635,7 +635,7 @@ extension ChatViewController: MessagesDisplayDelegate {
         imageView.kf.setImage(with: .network(ImageResource(downloadURL: imageURL)))
     }
 
-    func configureAvatarView(_ avatarView: AvatarView,
+    public func configureAvatarView(_ avatarView: AvatarView,
                              for message: MessageType,
                              at indexPath: IndexPath,
                              in messagesCollectionView: MessagesCollectionView) {
@@ -657,19 +657,19 @@ extension ChatViewController: MessagesDisplayDelegate {
 
 extension ChatViewController: MessagesLayoutDelegate {
 
-    func cellTopLabelHeight(for message: MessageType,
+    public func cellTopLabelHeight(for message: MessageType,
                             at indexPath: IndexPath,
                             in messagesCollectionView: MessagesCollectionView) -> CGFloat {
         return viewModel.isPreviousMessageSameDate(at: indexPath.section) ? 0 : 24
     }
 
-    func messageTopLabelHeight(for message: MessageType,
+    public func messageTopLabelHeight(for message: MessageType,
                                at indexPath: IndexPath,
                                in messagesCollectionView: MessagesCollectionView) -> CGFloat {
         return isFromCurrentSender(message: message) ? 0 : 20
     }
     
-    func footerViewSize(for section: Int, in messagesCollectionView: MessagesCollectionView) -> CGSize {
+    public func footerViewSize(for section: Int, in messagesCollectionView: MessagesCollectionView) -> CGSize {
         guard let keyboard = viewModel.messages[section].keyboard, !keyboard.buttons.isEmpty,
               let layout = messagesCollectionView.collectionViewLayout as? CustomMessagesFlowLayout else {
                   return .zero
@@ -682,7 +682,7 @@ extension ChatViewController: MessagesLayoutDelegate {
 
 extension ChatViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
-    func imagePickerController(_ picker: UIImagePickerController,
+    public func imagePickerController(_ picker: UIImagePickerController,
                                didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let image = info[.originalImage] as? UIImage,
               let data = image.jpegData(compressionQuality: 0.5) else {
@@ -706,11 +706,12 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
 
 extension ChatViewController: UIDocumentPickerDelegate {
 
-    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+    public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
         guard let url = urls.first,
-              let documentData = try? Data(contentsOf: url) else {
-                  return
-              }
+              url.startAccessingSecurityScopedResource(),
+              let documentData = try? Data(contentsOf: url) else { return }
+
+        defer { url.stopAccessingSecurityScopedResource() }
 
         let documentURL = urls[0]
         let documentExtension = documentURL.pathExtension

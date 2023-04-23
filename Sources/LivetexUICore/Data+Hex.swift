@@ -8,7 +8,7 @@
 
 import UIKit
 
-extension Data {
+public extension Data {
 
     var hexString: String {
         return map { String(format: "%02x", $0) }.joined()

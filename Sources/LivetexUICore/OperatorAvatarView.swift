@@ -9,7 +9,7 @@
 import UIKit
 import Kingfisher
 
-class OperatorAvatarView: UIView {
+public class OperatorAvatarView: UIView {
 
     private let imageView = UIImageView()
 
@@ -22,14 +22,14 @@ class OperatorAvatarView: UIView {
 
     // MARK: - Initialization
 
-    override init(frame: CGRect) {
+   public override init(frame: CGRect) {
         super.init(frame: frame)
 
         addSubview(actionButton)
         addSubview(imageView)
     }
 
-    required init?(coder: NSCoder) {
+   public required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
 
@@ -48,7 +48,7 @@ class OperatorAvatarView: UIView {
 
     // MARK: - Layout
 
-    override func layoutSubviews() {
+   public override func layoutSubviews() {
         super.layoutSubviews()
 
         actionButton.frame = CGRect(origin: .zero, size: bounds.size)

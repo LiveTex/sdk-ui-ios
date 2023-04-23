@@ -9,7 +9,7 @@
 import UIKit
 import MessageKit
 
-public class CustomTextMessageSizeCalculator: TextMessageSizeCalculator {
+class CustomTextMessageSizeCalculator: TextMessageSizeCalculator {
 
     private let timeLabelFont: UIFont = .systemFont(ofSize: 10, weight: .medium)
 
@@ -36,7 +36,7 @@ public class CustomTextMessageSizeCalculator: TextMessageSizeCalculator {
         return labelSize(for: timeAttributedText, considering: .greatestFiniteMagnitude)
     }
 
-    override func messageContainerMaxWidth(for message: MessageType, at indexPath: IndexPath) -> CGFloat {
+     override func messageContainerMaxWidth(for message: MessageType, at indexPath: IndexPath) -> CGFloat {
         let dataSource = messagesLayout.messagesDataSource
         let maxWidth = super.messageContainerMaxWidth(for: message, at: indexPath)
         let timeLabelInset = timeLabelInsets(for: message)
@@ -48,7 +48,7 @@ public class CustomTextMessageSizeCalculator: TextMessageSizeCalculator {
         }
     }
 
-    override func messageContainerSize(for message: MessageType, at indexPath: IndexPath) -> CGSize {
+      override func messageContainerSize(for message: MessageType, at indexPath: IndexPath) -> CGSize {
         let timeLabelInset = timeLabelInsets(for: message)
         let timeSize = timeLabelSize(for: message)
         let maxWidth = messageContainerMaxWidth(for: message, at: indexPath)
@@ -91,7 +91,7 @@ public class CustomTextMessageSizeCalculator: TextMessageSizeCalculator {
         return size
     }
 
-    override func configure(attributes: UICollectionViewLayoutAttributes) {
+      override func configure(attributes: UICollectionViewLayoutAttributes) {
         super.configure(attributes: attributes)
         guard let attributes = attributes as? CustomMessagesCollectionViewLayoutAttributes else {
             return

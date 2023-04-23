@@ -8,12 +8,12 @@
 
 import UIKit
 
-enum LoadingKind: String {
+ enum LoadingKind: String {
     case connect = "connecting"
     case download = "downloading"
 }
 
-final class ConnectionView: UIView {
+ class ConnectionView: UIView {
 
     private struct Appearance {
         static let titleLabelFont: UIFont = .systemFont(ofSize: 17, weight: .semibold)
@@ -68,7 +68,7 @@ final class ConnectionView: UIView {
 
     // MARK: - Layout
 
-    override func layoutSubviews() {
+      override func layoutSubviews() {
         super.layoutSubviews()
 
         stackView.frame = stackViewFrame

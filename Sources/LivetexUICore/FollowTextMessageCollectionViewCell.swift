@@ -9,8 +9,8 @@
 import UIKit
 import MessageKit
 
-public class FollowTextMessageCollectionViewCell: MessageContentCell {
-
+class FollowTextMessageCollectionViewCell: MessageContentCell {
+    
     private let followMessageView = FollowMessageView(frame: .zero)
     
     private let timeLabel: UILabel = {
@@ -19,14 +19,14 @@ public class FollowTextMessageCollectionViewCell: MessageContentCell {
         label.textAlignment = .center
         return label
     }()
-
+    
     private let statusImageView = UIImageView(image: UIImage(asset: .checkmark))
     
     private var messageLabel = MessageLabel()
-
+    
     // MARK: - Lifecycle
-
- public   override func prepareForReuse() {
+    
+    override func prepareForReuse() {
         super.prepareForReuse()
         messageLabel.attributedText = nil
         messageLabel.text = nil
@@ -34,8 +34,8 @@ public class FollowTextMessageCollectionViewCell: MessageContentCell {
         statusImageView.image = nil
         followMessageView.text = nil
     }
-
-    public   override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
+    
+    override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
         super.apply(layoutAttributes)
         guard let attributes = layoutAttributes as? CustomMessagesCollectionViewLayoutAttributes else {
             return
@@ -52,7 +52,7 @@ public class FollowTextMessageCollectionViewCell: MessageContentCell {
                                        y: messageContainerView.bounds.height - statusHeight,
                                        width: attributes.statusImageSize.width,
                                        height: attributes.statusImageSize.height)
-
+        
         timeLabel.frame = CGRect(x: statusImageView.frame.minX - rightOffset,
                                  y: messageContainerView.bounds.height - bottomOffset,
                                  width: attributes.timeLabelSize.width,
@@ -63,19 +63,19 @@ public class FollowTextMessageCollectionViewCell: MessageContentCell {
                                          height: 20)
         messageLabel.frame.origin.y = 20
     }
-
+    
     // MARK: - Configuration
-
-    public   override func setupSubviews() {
+    
+    override func setupSubviews() {
         super.setupSubviews()
-
+        
         messageContainerView.addSubview(messageLabel)
         messageContainerView.addSubview(timeLabel)
         messageContainerView.addSubview(statusImageView)
         messageContainerView.addSubview(followMessageView)
     }
-
-    public   override func configure(with message: MessageType,
+    
+    override func configure(with message: MessageType,
                             at indexPath: IndexPath,
                             and messagesCollectionView: MessagesCollectionView) {
         super.configure(with: message, at: indexPath, and: messagesCollectionView)
@@ -104,7 +104,7 @@ public class FollowTextMessageCollectionViewCell: MessageContentCell {
         timeLabel.text = DateFormatter.relativeTime.string(from: message.sentDate)
         timeLabel.textColor = dataSource.isFromCurrentSender(message: message) ? .lightText : .lightGray
         statusImageView.image = dataSource.isFromCurrentSender(message: message) ? UIImage(asset: .checkmark) : nil
-
+        
         let textColor = displayDelegate.textColor(for: message, at: indexPath, in: messagesCollectionView)
         messageLabel.textColor = textColor
         messageLabel.text = messageText
@@ -115,7 +115,7 @@ public class FollowTextMessageCollectionViewCell: MessageContentCell {
     
     /// Used to handle the cell's contentView's tap gesture.
     /// Return false when the contentView does not need to handle the gesture.
-    public   override func cellContentView(canHandle touchPoint: CGPoint) -> Bool {
+    override func cellContentView(canHandle touchPoint: CGPoint) -> Bool {
         return messageLabel.handleGesture(touchPoint)
     }
     

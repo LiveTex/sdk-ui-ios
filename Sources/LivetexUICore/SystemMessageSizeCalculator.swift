@@ -9,7 +9,7 @@
 import UIKit
 import MessageKit
 
-public class SystemMessageSizeCalculator: MessageSizeCalculator {
+ class SystemMessageSizeCalculator: MessageSizeCalculator {
 
     private let textLabelFont: UIFont = .systemFont(ofSize: 13)
 

@@ -8,11 +8,11 @@
 
 import UIKit
 
-class EstimationView: UIView {
+public class EstimationView: UIView {
 
     var onEstimateAction: ((Action) -> Void)?
 
-    private let titleLabel: UILabel = {
+    let titleLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .left
         label.font = .systemFont(ofSize: 16)
@@ -21,7 +21,7 @@ class EstimationView: UIView {
         return label
     }()
 
-    private lazy var voteUpButton: UIButton = {
+    lazy var voteUpButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(asset: .voteUp), for: .normal)
         button.setTitle(nil, for: .normal)
@@ -31,7 +31,7 @@ class EstimationView: UIView {
         return button
     }()
 
-    private lazy var voteDownButton: UIButton = {
+    lazy var voteDownButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(asset: .voteDown), for: .normal)
         button.setTitle(nil, for: .normal)
@@ -41,7 +41,7 @@ class EstimationView: UIView {
         return button
     }()
 
-    private let separator: UIView = {
+    let separator: UIView = {
         let view = UIView()
         view.backgroundColor = .lightGray
         return view
@@ -49,13 +49,13 @@ class EstimationView: UIView {
 
     // MARK: - Initialization
 
-    override init(frame: CGRect) {
+    public  override init(frame: CGRect) {
         super.init(frame: frame)
 
         configure()
     }
 
-    required init?(coder: NSCoder) {
+    public    required init?(coder: NSCoder) {
         super.init(coder: coder)
 
         configure()
@@ -63,7 +63,7 @@ class EstimationView: UIView {
 
     // MARK: - Configuration
 
-    private func configure() {
+    func configure() {
         backgroundColor = UIColor.groupTableViewBackground
         addSubview(titleLabel)
         addSubview(voteUpButton)
@@ -73,13 +73,13 @@ class EstimationView: UIView {
 
     // MARK: - Action
 
-    @objc private func onButtonTapped(_ sender: UIButton) {
+    @objc  func onButtonTapped(_ sender: UIButton) {
         onEstimateAction?(Action(rawValue: sender.tag) ?? .up)
     }
 
     // MARK: - Layout
 
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
 
         voteDownButton.frame = CGRect(x: bounds.maxX - Layout.voteDownInsets.right - voteUpButton.intrinsicContentSize.width,

@@ -12,7 +12,7 @@ public struct Key {
     static let visitorToken = "com.livetex.visitorToken"
 }
 
-class Settings {
+public class Settings {
 
     var visitorToken: String? {
         get {

@@ -8,7 +8,7 @@
 
 import UIKit
 
-enum Asset: String {
+public enum Asset: String {
     case checkmark = "checkmark"
     case attachment = "attach"
     case account = "account"

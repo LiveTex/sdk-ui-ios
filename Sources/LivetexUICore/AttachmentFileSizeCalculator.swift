@@ -10,7 +10,7 @@ import Foundation
 import MessageKit
 import UIKit
 
-public class AttachmentFileSizeCalculator: MessageSizeCalculator {
+ class AttachmentFileSizeCalculator: MessageSizeCalculator {
     // MARK: Open
     open override func messageContainerMaxWidth(for message: MessageType, at indexPath: IndexPath) -> CGFloat {
         let maxWidth = super.messageContainerMaxWidth(for: message, at: indexPath)

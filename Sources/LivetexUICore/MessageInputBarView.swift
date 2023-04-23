@@ -9,19 +9,19 @@
 import UIKit
 import InputBarAccessoryView
 
-class MessageInputBarView: InputBarAccessoryView {
+public class MessageInputBarView: InputBarAccessoryView {
 
-    var onAttachmentButtonTapped: (() -> Void)?
+   public var onAttachmentButtonTapped: (() -> Void)?
 
     // MARK: - Initialization
 
-    override init(frame: CGRect) {
+   public override init(frame: CGRect) {
         super.init(frame: frame)
 
         configure()
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
 
         configure()
