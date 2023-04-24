@@ -12,16 +12,17 @@ let package = Package(
         .library(name: "LivetexUICore", targets: ["LivetexUICore"]),
     ],
     dependencies: [
+        .package(url: "https://github.com/LiveTex/sdk-ios", branch: "master"),
         .package(url: "https://github.com/MessageKit/MessageKit", from: "4.1.1"),
         .package(url: "https://github.com/onevcat/Kingfisher.git", from: "6.3.1" ),
         .package(url: "https://github.com/atone/BFRImageViewer", from: "1.2.9"),
-        .package(url: "https://github.com/pinterest/PINRemoteImage", branch: "master"),
-        .package(name: "LifetexCore", url: "https://github.com/LiveTex/sdk-ios", branch: "master")
+        .package(url: "https://github.com/pinterest/PINRemoteImage", from: "3.0.3") //branch: "master"),
     ],
     targets: [
         .target(
             name: "LivetexUICore",
-            dependencies: ["MessageKit", "Kingfisher","BFRImageViewer", "PINRemoteImage"],
-            path: "Sources")
+            dependencies: ["LifetexCore", "MessageKit", "Kingfisher","BFRImageViewer", "PINRemoteImage"],
+            path: "Sources",
+            resources: [.copy("Resources")])
     ]
 )
