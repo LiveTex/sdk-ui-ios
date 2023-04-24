@@ -23,6 +23,6 @@ let package = Package(
             name: "LivetexUICore",
             dependencies: ["MessageKit", "Kingfisher","BFRImageViewer", "PINRemoteImage"],
             path: "Sources",
-            resources: [.process("Resources")])
+            resources: [.copy("Resources")])
     ]
 )
