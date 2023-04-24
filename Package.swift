@@ -21,7 +21,7 @@ let package = Package(
     targets: [
         .target(
             name: "LivetexUICore",
-            dependencies: ["LifetexCore", "MessageKit", "Kingfisher","BFRImageViewer", "PINRemoteImage"],
+            dependencies: ["MessageKit", "Kingfisher","BFRImageViewer", "PINRemoteImage"],
             path: "Sources",
             resources: [.copy("Resources")])
     ]
