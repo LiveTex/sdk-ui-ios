@@ -24,6 +24,8 @@ let package = Package(
                 .product(name: "KeychainSwift", package: "keychain-swift"),
                            .product(name: "LivetexCore", package: "sdk-ios")
                           ],
-            path: "Sources")
+            path: "Sources",
+exclude: ["AppDelegate.swift", "Assets.xcassets"]
+        )
     ]
 )
