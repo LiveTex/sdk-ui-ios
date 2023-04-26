@@ -82,7 +82,6 @@ public class ChatViewModel {
     }
 
     public func startSession(token: SessionToken) {
-        print("April", token)
         settings.visitorToken = token.visitorToken
         sessionService = LivetexSessionService(token: token)
         sessionService?.onEvent = { [weak self] event in
@@ -121,9 +120,7 @@ public class ChatViewModel {
     }
 
     @objc public func applicationDidRegisterForRemoteNotifications(_ notification: Notification) {
-        print("April1.5", notification)
         let deviceToken = notification.object as? String
-        print("April2", deviceToken)
         requestAuthentication(deviceToken: deviceToken ?? "")
     }
 
