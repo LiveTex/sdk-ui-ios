@@ -22,7 +22,7 @@ let package = Package(
             name: "LivetexUICore",
             dependencies: ["MessageKit", "Kingfisher","BFRImageViewer", "PINRemoteImage",
                 .product(name: "KeychainSwift", package: "keychain-swift"),
-                           .product(name: "LiveTex", package: "sdk-ios")
+                           .product(name: "LivetexCore", package: "sdk-ios")
                           ],
             path: "Sources")
     ]
