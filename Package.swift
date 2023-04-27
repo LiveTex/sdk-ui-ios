@@ -21,11 +21,10 @@ let package = Package(
         .target(
             name: "LivetexUICore",
             dependencies: ["MessageKit", "Kingfisher","BFRImageViewer", "PINRemoteImage",
-                .product(name: "KeychainSwift", package: "keychain-swift"),
+                           .product(name: "KeychainSwift", package: "keychain-swift"),
                            .product(name: "LivetexCore", package: "sdk-ios")
-                          ],
-            path: "Sources",
-exclude: ["AppDelegate.swift", "Assets.xcassets"]
+            ],
+            path: "Sources"
         )
     ]
 )
