@@ -9,6 +9,7 @@
 import UIKit
 import MessageKit
 import LivetexCore
+import KeychainSwift
 
 public class ChatViewModel {
 
@@ -32,7 +33,7 @@ public class ChatViewModel {
 
     private(set) var isContentLoaded = false
     private(set) var isLoadingMore = false
-
+    private let keychain = KeychainSwift()
     private var isCanLoadMore = true
 
     private(set) var isEmployeeEstimated = true
@@ -42,6 +43,7 @@ public class ChatViewModel {
     // MARK: - Initialization
 
   public init() {
+
 
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(applicationWillEnterForeground),
@@ -55,8 +57,10 @@ public class ChatViewModel {
 
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(applicationDidRegisterForRemoteNotifications(_:)),
-                                               name: UIApplication.didFinishLaunchingNotification,
+                                               name: UIApplication.didRegisterForRemoteNotifications,
                                                object: nil)
+      NotificationCenter.default.post(name: UIApplication.didRegisterForRemoteNotifications,
+                                      object:  keychain.get("deviceToken"))
     }
 
     // MARK: - Configuration
@@ -237,3 +241,8 @@ public class ChatViewModel {
 
 }
 
+
+public extension UIApplication {
+
+  public static let didRegisterForRemoteNotifications = NSNotification.Name(rawValue: "didRegisterForRemoteNotifications")
+}
