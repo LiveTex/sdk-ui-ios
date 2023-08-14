@@ -41,8 +41,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SDWebImage/libwebp-Xcode",
       "state" : {
-        "revision" : "4f52fc9b29600a03de6e05af16df0d694cb44301",
-        "version" : "1.2.4"
+        "revision" : "1cdddb80ccef6d30e869c4abe1f9f3d3871a25b5",
+        "version" : "1.3.1"
       }
     },
     {
@@ -78,7 +78,7 @@
       "location" : "https://github.com/pinterest/PINRemoteImage",
       "state" : {
         "branch" : "master",
-        "revision" : "18637e4414d77fbc95cd7d499179a9880e9a78d8"
+        "revision" : "ef547920dfe0e1922c25d9abb959acd102f8c2b5"
       }
     },
     {
@@ -87,7 +87,7 @@
       "location" : "https://github.com/LiveTex/sdk-ios",
       "state" : {
         "branch" : "master",
-        "revision" : "180445d5a7e44f4bf00648ae7722638f472e5e30"
+        "revision" : "dfc0b804bc07b43708e07037624aaa7cc69d4a28"
       }
     }
   ],
