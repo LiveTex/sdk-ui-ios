@@ -21,7 +21,7 @@ public class ChatViewModel {
     var onAttributesReceived: (() -> Void)?
     var onTypingReceived: (() -> Void)?
     var onWebsocketStateChanged: ((Bool) -> Void)?
-
+    var deviceToken: String?
     var followMessage: String?
     var messages: [ChatMessage] = []
 
@@ -66,9 +66,9 @@ public class ChatViewModel {
     // MARK: - Configuration
 
     public func requestAuthentication(deviceToken: String) {
-        let loginService = LivetexAuthService(token: settings.visitorToken.map { .system($0) },
+        let loginService = LivetexAuthService(visitorToken: settings.visitorToken,
                                               deviceToken: deviceToken)
-
+        self.deviceToken = deviceToken
         loginService.requestAuthorization { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
