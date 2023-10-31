@@ -118,6 +118,9 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
     }
 
     public func setConnectingState() {
+        if let token = viewModel.sessionToken {
+            viewModel.sessionService?.connect()
+        }
         dialogueStateView.setConnectionInProgress(withKind: .connect)
     }
 
@@ -631,7 +634,7 @@ extension ChatViewController: MessagesDisplayDelegate {
         }
 
         imageView.kf.indicatorType = .activity
-        imageView.kf.setImage(with: .network(ImageResource(downloadURL: imageURL)))
+        imageView.kf.setImage(with: .network(Kingfisher.ImageResource(downloadURL: imageURL)))
     }
 
     public func configureAvatarView(_ avatarView: AvatarView,
@@ -647,7 +650,7 @@ extension ChatViewController: MessagesDisplayDelegate {
                   return
               }
 
-        avatarView.kf.setImage(with: ImageResource(downloadURL: resourceURL), placeholder: placeholderImage)
+        avatarView.kf.setImage(with: Kingfisher.ImageResource(downloadURL: resourceURL), placeholder: placeholderImage)
     }
 
 }
