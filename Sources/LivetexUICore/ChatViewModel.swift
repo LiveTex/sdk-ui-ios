@@ -227,7 +227,7 @@ public class ChatViewModel {
         DispatchQueue.global(qos: .userInitiated).async {
             self.isLoadingMore = false
             var newMessages = Array(Set(self.convertMessages(items)).subtracting(self.messages))
-            if newMessages.count != self.messages.count {
+            if newMessages.count != self.messages.count || self.messages.count == 1 {
 
                 let currentDate = self.messages.first?.sentDate ?? Date()
                 let receivedDate = newMessages.last?.sentDate ?? Date()
