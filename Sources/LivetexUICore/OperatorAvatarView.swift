@@ -42,7 +42,7 @@ public class OperatorAvatarView: UIView {
 
         let imageProcessor = RoundCornerImageProcessor(cornerRadius: bounds.height / 2,
                                                        targetSize: bounds.size)
-        imageView.kf.setImage(with: .network(ImageResource(downloadURL: resourceURL)),
+        imageView.kf.setImage(with: .network(Kingfisher.ImageResource(downloadURL: resourceURL)),
                               options: [.processor(imageProcessor)])
     }
 

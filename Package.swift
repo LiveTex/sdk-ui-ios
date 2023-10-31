@@ -11,8 +11,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/LiveTex/sdk-ios", branch: "master"),
-        .package(url: "https://github.com/MessageKit/MessageKit", from: "4.1.1"),
-        .package(url: "https://github.com/onevcat/Kingfisher.git", from: "6.3.1" ),
+        .package(url: "https://github.com/MessageKit/MessageKit", from: "4.2.0"),
+        .package(url: "https://github.com/onevcat/Kingfisher.git", from: "7.9.1" ),
         .package(url: "https://github.com/atone/BFRImageViewer", from: "1.2.9"),
         .package(url: "https://github.com/pinterest/PINRemoteImage", branch: "master"),
         .package(url: "https://github.com/evgenyneu/keychain-swift", from: "19.0.0")
