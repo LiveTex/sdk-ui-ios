@@ -30,7 +30,7 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
     // MARK: - Properties
 
     public lazy var viewModel = ChatViewModel()
-    
+
     public lazy var typingFunction = DebouncedFunction(timeInterval: Constants.debouncedFunctionTimeInterval) { [weak self] in
         self?.setTypingIndicatorViewHidden(true, animated: true)
     }
@@ -52,7 +52,7 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
 
         return dialogueStateView
     }()
-    
+
     public lazy var avatarView = OperatorAvatarView()
     public lazy var estimationView = EstimationView()
     public lazy var messageInputBarView = MessageInputBarView()
@@ -65,7 +65,7 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
 
     // MARK: - Lifecycle
 
- public override func viewDidLoad() {
+    public override func viewDidLoad() {
         configureCollectionView()
         super.viewDidLoad()
         configureInputBar()
@@ -154,7 +154,7 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
                     self.handleInputStateIfNeeded(shouldShowInput: self.shouldShowInput)
                 }
             }
-            
+
             let alertController = UIAlertController(title: "Выбор отдела",
                                                     message: "Выберите куда направить ваше обращение",
                                                     preferredStyle: .actionSheet)
@@ -172,7 +172,7 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
                 self?.messagesCollectionView.reloadSections(IndexSet(integer: index))
             }, completion: nil)
         }
-        
+
         viewModel.onMessagesReceived = { [weak self] newMessages in
             guard let self = self else {
                 return
@@ -188,7 +188,7 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
                     self.messagesCollectionView.scrollToLastItem(animated: true)
                 })
             }
-            
+
             if self.viewModel.messages.isEmpty {
                 updates()
             } else {
@@ -202,7 +202,7 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
                 }
             }
         }
-        
+
         viewModel.onDialogStateReceived = { [weak self] dialog in
             self?.dialogueStateView.title = dialog.employee?.name
             self?.dialogueStateView.subtitle = dialog.employeeStatus?.rawValue
@@ -231,7 +231,7 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
             placeholder.setAttributes([.foregroundColor: UIColor.red,
                                        .baselineOffset: 1],
                                       range: NSRange(location: 0, length: 1))
-            
+
             alertController.addTextField { textField in
                 textField.attributedPlaceholder = placeholder
             }
@@ -270,7 +270,7 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
         messagesCollectionView.messagesLayoutDelegate = self
         messagesCollectionView.messagesDisplayDelegate = self
         messagesCollectionView.gestureRecognizers?.filter { $0 is UITapGestureRecognizer }
-        .forEach { $0.delaysTouchesBegan = false }
+            .forEach { $0.delaysTouchesBegan = false }
 
         let layout = messagesCollectionView.collectionViewLayout as? MessagesCollectionViewFlowLayout
         layout?.sectionInset = UIEdgeInsets(top: 5, left: 8, bottom: 5, right: 8)
@@ -291,7 +291,7 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
         layout?.setMessageOutgoingAccessoryViewPadding(.zero)
         layout?.setMessageOutgoingAvatarSize(.zero)
         layout?.setMessageIncomingAvatarSize(CGSize(width: 30, height: 30))
-        
+
         scrollsToLastItemOnKeyboardBeginsEditing = true
         maintainPositionOnKeyboardFrameChanged = true
     }
@@ -333,7 +333,7 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
 
     // MARK: - Send message
 
-   public func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
+    public func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
         let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
         messageInputBarView.inputTextView.text = ""
         messageInputBarView.invalidatePlugins()
@@ -359,7 +359,7 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
     // MARK: - UICollectionViewDelegate
 
     public override func collectionView(_ collectionView: UICollectionView,
-                                 cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+                                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let messagesDataSource = messagesCollectionView.messagesDataSource else {
             fatalError("Ouch. nil data source for messages")
         }
@@ -385,7 +385,7 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
                 cell.configure(with: message, at: indexPath, and: messagesCollectionView)
                 return cell
             }
-            
+
             guard let type = value as? CustomType else {
                 return super.collectionView(collectionView, cellForItemAt: indexPath)
             }
@@ -409,8 +409,8 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
     // MARK: - UIScrollViewDelegate
 
     public override func collectionView(_ collectionView: UICollectionView,
-                                 willDisplay cell: UICollectionViewCell,
-                                 forItemAt indexPath: IndexPath) {
+                                        willDisplay cell: UICollectionViewCell,
+                                        forItemAt indexPath: IndexPath) {
         if indexPath.section == 0, viewModel.isContentLoaded, !viewModel.isLoadingMore {
             viewModel.loadMoreMessagesIfNeeded()
         }
@@ -420,9 +420,9 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
 
 // MARK: - Helper methods
 
- extension ChatViewController {
+extension ChatViewController {
 
-     public  func handleInputStateIfNeeded(shouldShowInput: Bool?) {
+    public  func handleInputStateIfNeeded(shouldShowInput: Bool?) {
         if let shouldShowInput = shouldShowInput {
             if shouldShowInput {
                 becomeFirstResponder()
@@ -432,7 +432,7 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
         }
     }
 
-     public  func hideInputAccessoryView() {
+    public  func hideInputAccessoryView() {
         guard let firstResponder = UIResponder.first else {
             return
         }
@@ -447,11 +447,11 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
 
 extension ChatViewController: MessagesDataSource {
 
-       public var currentSender: SenderType {
+    public var currentSender: SenderType {
         return viewModel.user
     }
 
-      public func numberOfSections(in messagesCollectionView: MessagesCollectionView) -> Int {
+    public func numberOfSections(in messagesCollectionView: MessagesCollectionView) -> Int {
         return viewModel.messages.count
     }
 
@@ -475,12 +475,12 @@ extension ChatViewController: MessagesDataSource {
     }
 
     public func messageFooterView(for indexPath: IndexPath,
-                           in messagesCollectionView: MessagesCollectionView) -> MessageReusableView {
+                                  in messagesCollectionView: MessagesCollectionView) -> MessageReusableView {
         let message = viewModel.messages[indexPath.section]
         guard let keyboard = message.keyboard else {
             return MessageReusableView()
         }
-        
+
         let view = messagesCollectionView.dequeueReusableFooterView(ActionsReusableView.self, for: indexPath)
         view.configure(with: keyboard)
         view.onAction = { [weak self] button in
@@ -495,15 +495,15 @@ extension ChatViewController: MessagesDataSource {
 // MARK: - UIContextMenuInteractionDelegate
 
 extension ChatViewController: UIContextMenuInteractionDelegate {
-    
+
     @available(iOS 13.0, *)
     public func contextMenuInteraction(_ interaction: UIContextMenuInteraction,
-                                configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+                                       configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         let point = interaction.location(in: messagesCollectionView)
         guard let indexPath = messagesCollectionView.indexPathForItem(at: point),
               case let .text(value) = viewModel.messages[indexPath.section].kind else {
-                  return nil
-              }
+            return nil
+        }
 
         let message = viewModel.messages[indexPath.section]
         let testView = FollowMessageView(name: message.sender.displayName, text: value)
@@ -544,8 +544,8 @@ extension ChatViewController: MessageCellDelegate {
               let imageSource = BFRBackLoadedImageSource(initialImage: item.placeholderImage, hiResURL: url),
               let viewController = BFRImageViewController(imageSource: [imageSource])
         else {
-                  return
-              }
+            return
+        }
 
         present(viewController, animated: true)
     }
@@ -576,9 +576,9 @@ extension ChatViewController: MessageCellDelegate {
                         }
                         self?.present(avc, animated: true)
                     }
-                    } catch {
-                        print(error)
-                    }
+                } catch {
+                    print(error)
+                }
             }.resume()
         default:
             return
@@ -589,8 +589,8 @@ extension ChatViewController: MessageCellDelegate {
 extension ChatViewController: MessagesDisplayDelegate {
 
     public func backgroundColor(for message: MessageType,
-                         at indexPath: IndexPath,
-                         in messagesCollectionView: MessagesCollectionView) -> UIColor {
+                                at indexPath: IndexPath,
+                                in messagesCollectionView: MessagesCollectionView) -> UIColor {
         switch message.kind {
         case .photo:
             return .messageGray
@@ -600,35 +600,35 @@ extension ChatViewController: MessagesDisplayDelegate {
     }
 
     public func enabledDetectors(for message: MessageType,
-                          at indexPath: IndexPath,
-                          in messagesCollectionView: MessagesCollectionView) -> [DetectorType] {
+                                 at indexPath: IndexPath,
+                                 in messagesCollectionView: MessagesCollectionView) -> [DetectorType] {
         return [.url]
     }
 
     public  func textColor(for message: MessageType,
-                   at indexPath: IndexPath,
-                   in messagesCollectionView: MessagesCollectionView) -> UIColor {
+                           at indexPath: IndexPath,
+                           in messagesCollectionView: MessagesCollectionView) -> UIColor {
         return isFromCurrentSender(message: message) ? .white : .darkText
     }
 
     public func detectorAttributes(for detector: DetectorType,
-                            and message: MessageType,
-                            at indexPath: IndexPath) -> [NSAttributedString.Key : Any] {
+                                   and message: MessageType,
+                                   at indexPath: IndexPath) -> [NSAttributedString.Key : Any] {
         return [.foregroundColor: isFromCurrentSender(message: message) ? UIColor.white : UIColor.black,
                 .underlineStyle: NSUnderlineStyle.single.rawValue,
                 .underlineColor: isFromCurrentSender(message: message) ? UIColor.white : UIColor.black]
     }
 
     public func messageStyle(for message: MessageType,
-                      at indexPath: IndexPath,
-                      in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
+                             at indexPath: IndexPath,
+                             in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
         return .bubble
     }
 
     public func configureMediaMessageImageView(_ imageView: UIImageView,
-                                        for message: MessageType,
-                                        at indexPath: IndexPath,
-                                        in messagesCollectionView: MessagesCollectionView) {
+                                               for message: MessageType,
+                                               at indexPath: IndexPath,
+                                               in messagesCollectionView: MessagesCollectionView) {
         guard case let .photo(item) = message.kind, let imageURL = item.url else {
             return
         }
@@ -638,17 +638,17 @@ extension ChatViewController: MessagesDisplayDelegate {
     }
 
     public func configureAvatarView(_ avatarView: AvatarView,
-                             for message: MessageType,
-                             at indexPath: IndexPath,
-                             in messagesCollectionView: MessagesCollectionView) {
+                                    for message: MessageType,
+                                    at indexPath: IndexPath,
+                                    in messagesCollectionView: MessagesCollectionView) {
         let placeholderImage = UIImage(asset: .account)
         guard let chatMessage = message as? ChatViewModel.ChatMessage,
               let urlString = chatMessage.creator.employee?.avatarUrl,
               let resourceURL = URL(string: urlString) else {
-                  avatarView.backgroundColor = .clear
-                  avatarView.set(avatar: Avatar(image: placeholderImage))
-                  return
-              }
+            avatarView.backgroundColor = .clear
+            avatarView.set(avatar: Avatar(image: placeholderImage))
+            return
+        }
 
         avatarView.kf.setImage(with: Kingfisher.ImageResource(downloadURL: resourceURL), placeholder: placeholderImage)
     }
@@ -660,22 +660,22 @@ extension ChatViewController: MessagesDisplayDelegate {
 extension ChatViewController: MessagesLayoutDelegate {
 
     public func cellTopLabelHeight(for message: MessageType,
-                            at indexPath: IndexPath,
-                            in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+                                   at indexPath: IndexPath,
+                                   in messagesCollectionView: MessagesCollectionView) -> CGFloat {
         return viewModel.isPreviousMessageSameDate(at: indexPath.section) ? 0 : 24
     }
 
     public func messageTopLabelHeight(for message: MessageType,
-                               at indexPath: IndexPath,
-                               in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+                                      at indexPath: IndexPath,
+                                      in messagesCollectionView: MessagesCollectionView) -> CGFloat {
         return isFromCurrentSender(message: message) ? 0 : 20
     }
-    
+
     public func footerViewSize(for section: Int, in messagesCollectionView: MessagesCollectionView) -> CGSize {
         guard let keyboard = viewModel.messages[section].keyboard, !keyboard.buttons.isEmpty,
               let layout = messagesCollectionView.collectionViewLayout as? CustomMessagesFlowLayout else {
-                  return .zero
-              }
+            return .zero
+        }
 
         return CGSize(width: layout.itemWidth, height: ActionsReusableView.viewHeight(for: keyboard))
     }
@@ -685,11 +685,16 @@ extension ChatViewController: MessagesLayoutDelegate {
 extension ChatViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     public func imagePickerController(_ picker: UIImagePickerController,
-                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+                                      didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let image = info[.originalImage] as? UIImage,
            let data = image.jpegData(compressionQuality: 0.5),
            let url = info[.imageURL] as? URL {
-            viewModel.sessionService?.upload(data: data, fileName: url.lastPathComponent, mimeType: "image/jpeg") { [weak self] result in
+
+            let documentURL = url
+            let documentExtension = documentURL.pathExtension
+            let name = documentURL.deletingPathExtension().lastPathComponent.description.transliterateRussianToLatin()
+
+            viewModel.sessionService?.upload(data: data, fileName: name + "." + documentExtension.lowercased(), mimeType: "image/jpeg") { [weak self] result in
                 switch result {
                 case let .success(attachment):
                     self?.viewModel.sendEvent(ClientEvent(.file(attachment)))
@@ -699,13 +704,18 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
             }
         } else if let videoURL = info[.mediaURL] as? URL{
             do { let videoData = try Data(contentsOf: videoURL)
+                let documentURL = videoURL //urls[0]
+                let documentExtension = documentURL.pathExtension
+                let name = documentURL.deletingPathExtension().lastPathComponent.description.transliterateRussianToLatin()
 
-                viewModel.sessionService?.upload(data: videoData, fileName: videoURL.lastPathComponent, mimeType: "video/mp4") { [weak self] result in
-                    switch result {
-                    case let .success(attachment):
-                        self?.viewModel.sendEvent(ClientEvent(.file(attachment)))
-                    case let .failure(error):
-                        print(error.localizedDescription)
+                if let typeFile = UTType(filenameExtension: documentURL.pathExtension)?.preferredMIMEType {
+                    viewModel.sessionService?.upload(data: videoData, fileName: name + "." + documentExtension.lowercased(), mimeType: typeFile) { [weak self] result in
+                        switch result {
+                        case let .success(attachment):
+                            self?.viewModel.sendEvent(ClientEvent(.file(attachment)))
+                        case let .failure(error):
+                            print(error.localizedDescription)
+                        }
                     }
                 }
             }  catch {
@@ -748,10 +758,11 @@ extension ChatViewController: UIDocumentPickerDelegate {
 
         let documentURL = url //urls[0]
         let documentExtension = documentURL.pathExtension
+        let name = documentURL.deletingPathExtension().lastPathComponent.description.transliterateRussianToLatin()
         // TODO: - Add methods upload and sendEvent to viewModel
         switch documentExtension {
         case "pdf":
-            viewModel.sessionService?.upload(data: documentData, fileName: documentURL.lastPathComponent, mimeType: "application/pdf") { [weak self] result in
+            viewModel.sessionService?.upload(data: documentData, fileName: name + "." + documentExtension.lowercased(), mimeType: "application/pdf") { [weak self] result in
                 switch result {
                 case let .success(attachment):
                     self?.viewModel.sendEvent(ClientEvent(.file(attachment)))
@@ -761,12 +772,14 @@ extension ChatViewController: UIDocumentPickerDelegate {
             }
 
         default:
-            viewModel.sessionService?.upload(data: documentData, fileName: documentURL.lastPathComponent, mimeType: documentURL.pathExtension) { [weak self] result in
-                switch result {
-                case let .success(attachment):
-                    self?.viewModel.sendEvent(ClientEvent(.file(attachment)))
-                case let .failure(error):
-                    print(error.localizedDescription)
+            if let typeFile = UTType(filenameExtension: documentURL.pathExtension)?.preferredMIMEType {
+                viewModel.sessionService?.upload(data: documentData, fileName: name + "." + documentExtension.lowercased(), mimeType: typeFile) { [weak self] result in
+                    switch result {             
+                    case let .success(attachment):
+                        self?.viewModel.sendEvent(ClientEvent(.file(attachment)))
+                    case let .failure(error):
+                        print(error.localizedDescription)
+                    }
                 }
             }
         }
