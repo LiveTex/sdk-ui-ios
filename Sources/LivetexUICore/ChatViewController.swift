@@ -561,7 +561,7 @@ extension ChatViewController: MessageCellDelegate {
             dialogueStateView.setConnectionInProgress(withKind: .download)
             URLSession.shared.dataTask(with: url) { data, response, error in
                 guard let data = data, error == nil else { return }
-                let tmpURL = FileManager.default.temporaryDirectory.appendingPathComponent(response?.suggestedFilename ?? url.lastPathComponent)
+                let tmpURL = FileManager.default.temporaryDirectory.appendingPathComponent((attachment.name ?? url.pathExtension) + "." + (url.pathExtension))
                 do {
                     try data.write(to: tmpURL)
                     DispatchQueue.main.async { [weak self] in
@@ -692,9 +692,9 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
 
             let documentURL = url
             let documentExtension = documentURL.pathExtension
-            let name = documentURL.deletingPathExtension().lastPathComponent.description.transliterateRussianToLatin()
+            let name = documentURL.lastPathComponent.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? "test"
 
-            viewModel.sessionService?.upload(data: data, fileName: name + "." + documentExtension.lowercased(), mimeType: "image/jpeg") { [weak self] result in
+            viewModel.sessionService?.upload(data: data, fileName: name, mimeType: "image/jpeg") { [weak self] result in
                 switch result {
                 case let .success(attachment):
                     self?.viewModel.sendEvent(ClientEvent(.file(attachment)))
@@ -706,10 +706,10 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
             do { let videoData = try Data(contentsOf: videoURL)
                 let documentURL = videoURL //urls[0]
                 let documentExtension = documentURL.pathExtension
-                let name = documentURL.deletingPathExtension().lastPathComponent.description.transliterateRussianToLatin()
+                let name = documentURL.lastPathComponent.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? "test"
 
                 if let typeFile = UTType(filenameExtension: documentURL.pathExtension)?.preferredMIMEType {
-                    viewModel.sessionService?.upload(data: videoData, fileName: name + "." + documentExtension.lowercased(), mimeType: typeFile) { [weak self] result in
+                    viewModel.sessionService?.upload(data: videoData, fileName: name, mimeType: typeFile) { [weak self] result in
                         switch result {
                         case let .success(attachment):
                             self?.viewModel.sendEvent(ClientEvent(.file(attachment)))
@@ -758,11 +758,11 @@ extension ChatViewController: UIDocumentPickerDelegate {
 
         let documentURL = url //urls[0]
         let documentExtension = documentURL.pathExtension
-        let name = documentURL.deletingPathExtension().lastPathComponent.description.transliterateRussianToLatin()
+        let name  = documentURL.lastPathComponent.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? "test"
         // TODO: - Add methods upload and sendEvent to viewModel
         switch documentExtension {
         case "pdf":
-            viewModel.sessionService?.upload(data: documentData, fileName: name + "." + documentExtension.lowercased(), mimeType: "application/pdf") { [weak self] result in
+            viewModel.sessionService?.upload(data: documentData, fileName: name, mimeType: "application/pdf") { [weak self] result in
                 switch result {
                 case let .success(attachment):
                     self?.viewModel.sendEvent(ClientEvent(.file(attachment)))
@@ -773,7 +773,7 @@ extension ChatViewController: UIDocumentPickerDelegate {
 
         default:
             if let typeFile = UTType(filenameExtension: documentURL.pathExtension)?.preferredMIMEType {
-                viewModel.sessionService?.upload(data: documentData, fileName: name + "." + documentExtension.lowercased(), mimeType: typeFile) { [weak self] result in
+                viewModel.sessionService?.upload(data: documentData, fileName: name, mimeType: typeFile) { [weak self] result in
                     switch result {             
                     case let .success(attachment):
                         self?.viewModel.sendEvent(ClientEvent(.file(attachment)))
