@@ -25,6 +25,12 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
         static let debouncedFunctionTimeInterval: TimeInterval = 2
     }
 
+    // MARK: - External
+    public var userName: String?
+    public var userPhone: String?
+    public var userEmail: String?
+    public var userAttributes: [String : String] = [:]
+
 
 
     // MARK: - Properties
@@ -223,36 +229,53 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
         }
 
         viewModel.onAttributesReceived = { [weak self] in
-            let alertController = UIAlertController(title: "Атрибуты",
-                                                    message: "Необходимо указать обязательные атрибуты",
-                                                    preferredStyle: .alert)
-
-            let placeholder = NSMutableAttributedString(string: "* Имя")
-            placeholder.setAttributes([.foregroundColor: UIColor.red,
-                                       .baselineOffset: 1],
-                                      range: NSRange(location: 0, length: 1))
-
-            alertController.addTextField { textField in
-                textField.attributedPlaceholder = placeholder
-            }
-            alertController.addTextField { textField in
-                textField.placeholder = "Телефон"
-                textField.keyboardType = .phonePad
-            }
-            alertController.addTextField { textField in
-                textField.placeholder = "Email"
-                textField.keyboardType = .emailAddress
-            }
-            let accept = UIAlertAction(title: "OK", style: .default) { _ in
-                let attributes = Attributes(name: alertController.textFields?[0].text ?? "",
-                                            phone: alertController.textFields?[1].text ?? "",
-                                            email: alertController.textFields?[2].text ?? "")
-                self?.viewModel.user.displayName = alertController.textFields?[0].text ?? ""
+            
+            if let userName = self?.userName, let userPhone = self?.userPhone {
+                let attributes = Attributes(name: userName,
+                                            phone: userPhone,
+                                            email: self?.userEmail ?? "",
+                                            attributes: self?.userAttributes ?? [:]
+                )
+                self?.viewModel.user.displayName = userName
                 self?.viewModel.sendEvent(ClientEvent(.attributes(attributes)))
                 self?.handleInputStateIfNeeded(shouldShowInput: self?.shouldShowInput)
+                
+            } else {
+                let alertController = UIAlertController(title: "Пожалуйста представьтесь",
+                                                        message: "Заполните все обязательные атрибуты",
+                                                        preferredStyle: .alert)
+                
+                
+                let placeholder = NSMutableAttributedString(string: "* Имя")
+                placeholder.setAttributes([.foregroundColor: UIColor.red,
+                                           .baselineOffset: 1],
+                                          range: NSRange(location: 0, length: 1))
+                
+                alertController.addTextField { textField in
+                    textField.attributedPlaceholder = placeholder
+                    textField.text = self?.userName ?? ""
+                }
+                alertController.addTextField { textField in
+                    textField.placeholder = "Телефон"
+                    textField.keyboardType = .phonePad
+                    textField.text = self?.userPhone ?? ""
+                }
+                alertController.addTextField { textField in
+                    textField.placeholder = "Email"
+                    textField.keyboardType = .emailAddress
+                    textField.text = self?.userEmail ?? ""
+                }
+                let accept = UIAlertAction(title: "OK", style: .default) { _ in
+                    let attributes = Attributes(name: alertController.textFields?[0].text ?? "",
+                                                phone: alertController.textFields?[1].text ?? "",
+                                                email: alertController.textFields?[2].text ?? "")
+                    self?.viewModel.user.displayName = alertController.textFields?[0].text ?? ""
+                    self?.viewModel.sendEvent(ClientEvent(.attributes(attributes)))
+                    self?.handleInputStateIfNeeded(shouldShowInput: self?.shouldShowInput)
+                }
+                alertController.addActions(accept)
+                self?.present(alertController, animated: true)
             }
-            alertController.addActions(accept)
-            self?.present(alertController, animated: true)
         }
     }
 
