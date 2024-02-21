@@ -94,6 +94,10 @@ public class ChatViewModel {
             }
         }
     }
+    
+    public func updateSender(id: String) {
+        self.user.senderId = id
+    }
 
     public func startSession(token: SessionToken) {
         settings.visitorToken = token.visitorToken
