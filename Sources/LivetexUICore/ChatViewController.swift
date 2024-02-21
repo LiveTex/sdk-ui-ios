@@ -29,6 +29,7 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
     public var userName: String?
     public var userPhone: String?
     public var userEmail: String?
+    public var orderID: Int?
     public var userAttributes: [String : String] = [:]
 
 
@@ -132,6 +133,9 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
 
     public func setConnectedState() {
         dialogueStateView.setConnectedSuccessfully()
+        if let orderID {
+            viewModel.sendEvent(.init(.text("Номер заказа: \(orderID)")))
+        }
     }
 
     // MARK: - ViewModel binding
