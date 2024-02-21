@@ -25,6 +25,7 @@ public class ChatViewModel {
     var followMessage: String?
     var messages: [ChatMessage] = []
     var sessionToken: SessionToken?
+    public var customVisitorToken: String?
 
     var user = Recipient(senderId: UUID().uuidString, displayName: "")
 
@@ -67,8 +68,19 @@ public class ChatViewModel {
     // MARK: - Configuration
 
     public func requestAuthentication(deviceToken: String) {
-        let loginService = LivetexAuthService(visitorToken: settings.visitorToken,
-                                              deviceToken: deviceToken)
+        
+        let loginService = if let customVisitorToken {
+            LivetexAuthService(
+                customVisitorToken: customVisitorToken,
+                deviceToken: deviceToken
+            )
+        } else {
+            LivetexAuthService(
+                visitorToken: settings.visitorToken,
+                deviceToken: deviceToken
+            )
+        }
+        
         self.deviceToken = deviceToken
         loginService.requestAuthorization { [weak self] result in
             DispatchQueue.main.async {
@@ -81,6 +93,10 @@ public class ChatViewModel {
                 }
             }
         }
+    }
+    
+    public func updateSender(id: String) {
+        self.user.senderId = id
     }
 
     public func startSession(token: SessionToken) {
