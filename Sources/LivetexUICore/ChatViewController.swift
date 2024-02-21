@@ -227,6 +227,16 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
                 self?.messagesCollectionView.scrollToLastItem(animated: true)
             })
         }
+        
+        if let userName = userName, let userPhone = userPhone {
+            let attributes = Attributes(name: userName,
+                                        phone: userPhone,
+                                        email: userEmail ?? "",
+                                        attributes: userAttributes
+            )
+            viewModel.user.displayName = userName
+            viewModel.sendEvent(ClientEvent(.attributes(attributes)))
+        }
 
         viewModel.onAttributesReceived = { [weak self] in
             
