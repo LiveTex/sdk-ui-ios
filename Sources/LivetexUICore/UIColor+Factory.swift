@@ -13,5 +13,11 @@ extension UIColor {
     static let messageBlue: UIColor = UIColor(hex: 0x4c7ad0)
 
     static let messageGray: UIColor = UIColor(hex: 0xf5f5f5)
-
+    static let grayButton: UIColor = UIColor(hex: 0xD9D9D9)
+    
+    static let grayThumble: UIColor = UIColor(hex: 0xE5E6E8)
+    
+    static let grayFont: UIColor = UIColor(hex: 0x7E7979)
+    static let grayBackground: UIColor = UIColor(hex: 0xF3F4F6)
+    static let voteButton: UIColor = UIColor(hex: 0x167AFA)
 }

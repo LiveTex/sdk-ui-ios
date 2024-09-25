@@ -30,11 +30,10 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
     // MARK: - Properties
 
     public lazy var viewModel = ChatViewModel()
-
+    
     public lazy var typingFunction = DebouncedFunction(timeInterval: Constants.debouncedFunctionTimeInterval) { [weak self] in
-        self?.setTypingIndicatorViewHidden(true, animated: true)
+            self?.setTypingIndicatorViewHidden(true, animated: true)
     }
-
     // Local variable showing input state
     // onDialogStateReceived dependent
     public var shouldShowInput: Bool? = true
@@ -52,11 +51,13 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
 
         return dialogueStateView
     }()
-
+    public var isExpended = false
     public lazy var avatarView = OperatorAvatarView()
     public lazy var estimationView = EstimationView()
+    public lazy var doubleEstimationView = DoubleEstimationView()
+    public lazy var fiveEstimationView = FiveEstimationView()
+    public lazy var estimationFiveView = EstimationFiveView()
     public lazy var messageInputBarView = MessageInputBarView()
-
     public lazy var barButton: UIBarButtonItem = {
         let activityIndicator = UIActivityIndicatorView(frame: Appearance.activityIndicatorRect)
 
@@ -68,39 +69,161 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
     public override func viewDidLoad() {
         configureCollectionView()
         super.viewDidLoad()
+
         configureInputBar()
         configureViewModel()
         configureNavigationItem()
-        configureEstimationView()
     }
 
-    public  override func viewDidLayoutSubviews() {
+    public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
         avatarView.frame = CGRect(origin: .zero, size: CGSize(width: 30, height: 30))
 
-        layoutEstimationView()
+        layoutView(isExpended: isExpended)
     }
 
     // MARK: - Configuration
+    
+    public func layoutView(isExpended: Bool) {
+        if viewModel.isEnableType {
+            if viewModel.isTwoPoint {
+                view.addSubview(estimationView)
+                view.addSubview(doubleEstimationView)
+                doubleEstimationView.isHidden = !isExpended
+                estimationView.isHidden = isExpended
+                
+                let tapEstimation = UITapGestureRecognizer(target: self, action: #selector(handleTapEstimation))
+                let tapDoubleEstimation = UITapGestureRecognizer(target: self, action: #selector(handleDoubleTapEstimation))
+                                
+                estimationView.frame = CGRect(x: view.safeAreaLayoutGuide.layoutFrame.minX,
+                                              y: view.safeAreaLayoutGuide.layoutFrame.minY,
+                                              width: view.safeAreaLayoutGuide.layoutFrame.width,
+                                              height: EstimationView.viewHeight)
+                
+                doubleEstimationView.frame = CGRect(x: view.safeAreaLayoutGuide.layoutFrame.minX,
+                                                    y: view.safeAreaLayoutGuide.layoutFrame.minY,
+                                                    width: view.safeAreaLayoutGuide.layoutFrame.width,
+                                                    height: DoubleEstimationView.viewHeight)
+                if estimationView.isHidden == false {
+                    messagesCollectionView.contentInset.top = EstimationView.viewHeight
+                    messagesCollectionView.verticalScrollIndicatorInsets.top = EstimationView.viewHeight
+                    estimationView.voteConfig(viewModel.point)
 
-    public func layoutEstimationView() {
-        let offset = viewModel.isEmployeeEstimated ? EstimationView.viewHeight : 0
-        estimationView.frame = CGRect(x: view.safeAreaLayoutGuide.layoutFrame.minX,
-                                      y: view.safeAreaLayoutGuide.layoutFrame.minY,// - offset,
-                                      width: view.safeAreaLayoutGuide.layoutFrame.width,
-                                      height: EstimationView.viewHeight)
-
-        messagesCollectionView.contentInset.top = viewModel.isEmployeeEstimated ? 50 : EstimationView.viewHeight
-        messagesCollectionView.scrollIndicatorInsets.top = viewModel.isEmployeeEstimated ? 0 : EstimationView.viewHeight
-    }
-
-    public func configureEstimationView() {
-        view.addSubview(estimationView)
-
-        estimationView.onEstimateAction = { [weak self] action in
-            self?.viewModel.sendEvent(ClientEvent(.rating(action == .up ? "1" : "0")))
+                } else {
+                    messagesCollectionView.contentInset.top = DoubleEstimationView.viewHeight
+                    messagesCollectionView.verticalScrollIndicatorInsets.top =   DoubleEstimationView.viewHeight
+                }
+                doubleEstimationView.onDoubleEstimateAction = { [weak self] result in
+                    self?.handleDoubleTapEstimation()
+                    self?.estimationView.voteConfig(result)
+                    self?.viewModel.sendEvent(ClientEvent(.rating(VoteResult(type: TypeVote.doublePoint, value: result))))
+                }
+                
+                estimationView.onEstimateAction = { [weak self] in
+                    self?.handleTapEstimation()
+                }
+                
+                estimationView.addGestureRecognizer(tapEstimation)
+                estimationView.isUserInteractionEnabled = true
+                doubleEstimationView.addGestureRecognizer(tapDoubleEstimation)
+                doubleEstimationView.isUserInteractionEnabled = true
+            } else {
+                view.addSubview(estimationFiveView)
+                view.addSubview(fiveEstimationView)
+                fiveEstimationView.isHidden = !isExpended
+                estimationFiveView.isHidden = isExpended
+                
+                
+                let tapEstimation = UITapGestureRecognizer(target: self, action: #selector(handleTapFiveEstimation))
+                let tapDoubleEstimation = UITapGestureRecognizer(target: self, action: #selector(handleExTapFiveEstimation))
+                
+                
+                estimationFiveView.frame = CGRect(x: view.safeAreaLayoutGuide.layoutFrame.minX,
+                                                  y: view.safeAreaLayoutGuide.layoutFrame.minY,
+                                                  width: view.safeAreaLayoutGuide.layoutFrame.width,
+                                                  height: EstimationFiveView.viewHeight)
+                
+                fiveEstimationView.frame = CGRect(x: view.safeAreaLayoutGuide.layoutFrame.minX,
+                                                    y: view.safeAreaLayoutGuide.layoutFrame.minY,
+                                                    width: view.safeAreaLayoutGuide.layoutFrame.width,
+                                                    height: FiveEstimationView.viewHeight)
+                if estimationFiveView.isHidden == false {
+                    messagesCollectionView.contentInset.top = EstimationFiveView.viewHeight
+                    messagesCollectionView.verticalScrollIndicatorInsets.top = EstimationFiveView.viewHeight
+                    estimationFiveView.voteConfig(viewModel.point)
+                } else {
+                    messagesCollectionView.contentInset.top =  FiveEstimationView.viewHeight
+                    messagesCollectionView.verticalScrollIndicatorInsets.top = FiveEstimationView.viewHeight
+                }
+                fiveEstimationView.onFiveEstimateAction = { [weak self] result in
+                    self?.handleExTapFiveEstimation()
+                    self?.estimationFiveView.voteConfig(result.description)
+                    self?.viewModel.sendEvent(ClientEvent(.rating(VoteResult(type: TypeVote.fivePoint, value: result.description))))
+                }
+                
+                estimationFiveView.onEstimateAction = { [weak self] in
+                    self?.handleTapFiveEstimation()
+                }
+                estimationFiveView.addGestureRecognizer(tapEstimation)
+                estimationFiveView.isUserInteractionEnabled = true
+                fiveEstimationView.addGestureRecognizer(tapDoubleEstimation)
+                fiveEstimationView.isUserInteractionEnabled = true
+            }
+            
+        } else {
+            estimationView.isHidden = true
+            doubleEstimationView.isHidden = true
+            estimationFiveView.isHidden = true
+            messagesCollectionView.contentInset.top =  0
+            messagesCollectionView.verticalScrollIndicatorInsets.top = 0
         }
+    }
+    
+    @objc func handleTapEstimation() {
+        estimationView.isHidden = true
+        doubleEstimationView.isHidden = false
+        isExpended = true
+        if viewModel.point != nil {
+            doubleEstimationView.resultVote = nil
+            doubleEstimationView.resetResult()
+        }
+        messagesCollectionView.contentInset.top =  DoubleEstimationView.viewHeight
+        messagesCollectionView.verticalScrollIndicatorInsets.top =  DoubleEstimationView.viewHeight
+    }
+    
+    @objc func handleDoubleTapEstimation() {
+        estimationView.isHidden = false
+        doubleEstimationView.isHidden = true
+        isExpended = false
+        doubleEstimationView.resultVote = nil
+        doubleEstimationView.resetResult()
+
+        messagesCollectionView.contentInset.top =   EstimationView.viewHeight
+        messagesCollectionView.verticalScrollIndicatorInsets.top =  EstimationView.viewHeight
+    }
+    
+    @objc func handleTapFiveEstimation() {
+        estimationFiveView.isHidden = true
+        fiveEstimationView.isHidden = false
+        isExpended = true
+        if viewModel.point != nil {
+            fiveEstimationView.rating = 0
+            fiveEstimationView.resetResult()
+        }
+        messagesCollectionView.contentInset.top = FiveEstimationView.viewHeight
+        messagesCollectionView.verticalScrollIndicatorInsets.top =  FiveEstimationView.viewHeight
+    }
+    
+    @objc func handleExTapFiveEstimation() {
+        estimationFiveView.isHidden = false
+        fiveEstimationView.isHidden = true
+        isExpended = false
+        fiveEstimationView.rating = 0
+        fiveEstimationView.resetResult()
+
+        messagesCollectionView.contentInset.top =  EstimationFiveView.viewHeight
+        messagesCollectionView.verticalScrollIndicatorInsets.top =  EstimationFiveView.viewHeight
     }
 
     public func configureNavigationItem() {
@@ -154,7 +277,7 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
                     self.handleInputStateIfNeeded(shouldShowInput: self.shouldShowInput)
                 }
             }
-
+            
             let alertController = UIAlertController(title: "Выбор отдела",
                                                     message: "Выберите куда направить ваше обращение",
                                                     preferredStyle: .actionSheet)
@@ -172,56 +295,73 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
                 self?.messagesCollectionView.reloadSections(IndexSet(integer: index))
             }, completion: nil)
         }
-
+        
         viewModel.onMessagesReceived = { [weak self] newMessages in
             guard let self = self else {
                 return
             }
 
             let updates = {
-                self.messagesCollectionView.performBatchUpdates({
-                    let count = self.viewModel.messages.count
-                    let indexSet = IndexSet(integersIn: count..<count + newMessages.count)
-                    self.viewModel.messages.append(contentsOf: newMessages)
-                    self.messagesCollectionView.insertSections(indexSet)
-                }, completion: { _ in
-                    self.messagesCollectionView.scrollToLastItem(animated: true)
-                })
+                    self.messagesCollectionView.performBatchUpdates({
+                        let count = self.viewModel.messages.count
+                        let indexSet = IndexSet(integersIn: count..<count + newMessages.count)
+                        self.viewModel.messages.append(contentsOf: newMessages)
+                        self.messagesCollectionView.insertSections(indexSet)
+                    }, completion: { _ in
+                        self.messagesCollectionView.scrollToLastItem(at: .top, animated: true)
+                    })
             }
-
             if self.viewModel.messages.isEmpty {
                 updates()
             } else {
                 if self.isTypingIndicatorHidden {
                     updates()
                 } else {
-                    self.setTypingIndicatorViewHidden(true,
-                                                      animated: true,
-                                                      whilePerforming: updates,
-                                                      completion: nil)
+                        self.setTypingIndicatorViewHidden(true,
+                                                          animated: true,
+                                                          whilePerforming: updates,
+                                                          completion: nil)
                 }
             }
         }
-
         viewModel.onDialogStateReceived = { [weak self] dialog in
             self?.dialogueStateView.title = dialog.employee?.name
             self?.dialogueStateView.subtitle = dialog.employeeStatus?.rawValue
             self?.avatarView.setImage(with: URL(string: dialog.employee?.avatarUrl ?? ""))
             self?.shouldShowInput = dialog.showInput
             self?.handleInputStateIfNeeded(shouldShowInput: dialog.showInput)
-
+            if let rate = dialog.rate,
+               let enableType = rate.enabledType {
+                self?.viewModel.isEnableType = true
+                if enableType == .doublePoint {
+                    self?.viewModel.isTwoPoint = true
+                } else {
+                    self?.viewModel.isTwoPoint = false
+                }
+                if let set = rate.isSet {
+                    self?.viewModel.isSet = set
+                    if enableType == set.type {
+                        self?.viewModel.point = set.value
+                    } else {
+                        self?.viewModel.point = nil
+                    }
+                } else {
+                    self?.viewModel.isSet = nil
+                }
+            }
             UIView.animate(withDuration: 0.5) {
-                self?.layoutEstimationView()
+                self?.layoutView(isExpended: self?.isExpended ?? false)
             }
         }
 
+
         viewModel.onTypingReceived = { [weak self] in
             self?.typingFunction.call()
+            
             self?.setTypingIndicatorViewHidden(false, animated: true, completion: { _ in
                 self?.messagesCollectionView.scrollToLastItem(animated: true)
             })
         }
-
         viewModel.onAttributesReceived = { [weak self] in
             let alertController = UIAlertController(title: "Атрибуты",
                                                     message: "Необходимо указать обязательные атрибуты",
@@ -231,7 +371,7 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
             placeholder.setAttributes([.foregroundColor: UIColor.red,
                                        .baselineOffset: 1],
                                       range: NSRange(location: 0, length: 1))
-
+            
             alertController.addTextField { textField in
                 textField.attributedPlaceholder = placeholder
             }
@@ -270,7 +410,7 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
         messagesCollectionView.messagesLayoutDelegate = self
         messagesCollectionView.messagesDisplayDelegate = self
         messagesCollectionView.gestureRecognizers?.filter { $0 is UITapGestureRecognizer }
-            .forEach { $0.delaysTouchesBegan = false }
+        .forEach { $0.delaysTouchesBegan = false }
 
         let layout = messagesCollectionView.collectionViewLayout as? MessagesCollectionViewFlowLayout
         layout?.sectionInset = UIEdgeInsets(top: 5, left: 8, bottom: 5, right: 8)
@@ -291,9 +431,29 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
         layout?.setMessageOutgoingAccessoryViewPadding(.zero)
         layout?.setMessageOutgoingAvatarSize(.zero)
         layout?.setMessageIncomingAvatarSize(CGSize(width: 30, height: 30))
-
+        
         scrollsToLastItemOnKeyboardBeginsEditing = true
-        maintainPositionOnKeyboardFrameChanged = true
+        maintainPositionOnInputBarHeightChanged = true
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+        messagesCollectionView.addGestureRecognizer(tapGestureRecognizer)
+    }
+    
+    @objc func handleTap(gestureRecognizer: UITapGestureRecognizer) {
+        
+        if doubleEstimationView.isHidden == false && viewModel.isTwoPoint == true  {
+            if viewModel.isSet == nil {
+                doubleEstimationView.resetResult()
+                estimationView.voteConfig(nil)
+            }
+            handleDoubleTapEstimation()
+        } else if fiveEstimationView.isHidden == false && viewModel.isTwoPoint == false   {
+            if  viewModel.isSet == nil {
+                fiveEstimationView.resetResult()
+                estimationFiveView.voteConfig()
+            }
+            handleExTapFiveEstimation()
+            
+        }
     }
 
     // MARK: - Send attachment
@@ -305,7 +465,7 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
         let cancel = UIAlertAction(title: "Отменить", style: .cancel)
 
         let library = UIAlertAction(title: "Фото и Видео", style: .default) { _ in
-            imagePickerController.sourceType = .savedPhotosAlbum
+            imagePickerController.sourceType = .savedPhotosAlbum//.photoLibrary
             imagePickerController.mediaTypes = [UTType.image.identifier, UTType.movie.identifier]
             self.present(imagePickerController, animated: true)
         }
@@ -385,7 +545,7 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
                 cell.configure(with: message, at: indexPath, and: messagesCollectionView)
                 return cell
             }
-
+            
             guard let type = value as? CustomType else {
                 return super.collectionView(collectionView, cellForItemAt: indexPath)
             }
@@ -422,7 +582,7 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
 
 extension ChatViewController {
 
-    public  func handleInputStateIfNeeded(shouldShowInput: Bool?) {
+    public func handleInputStateIfNeeded(shouldShowInput: Bool?) {
         if let shouldShowInput = shouldShowInput {
             if shouldShowInput {
                 becomeFirstResponder()
@@ -432,7 +592,7 @@ extension ChatViewController {
         }
     }
 
-    public  func hideInputAccessoryView() {
+    public func hideInputAccessoryView() {
         guard let firstResponder = UIResponder.first else {
             return
         }
@@ -480,7 +640,7 @@ extension ChatViewController: MessagesDataSource {
         guard let keyboard = message.keyboard else {
             return MessageReusableView()
         }
-
+        
         let view = messagesCollectionView.dequeueReusableFooterView(ActionsReusableView.self, for: indexPath)
         view.configure(with: keyboard)
         view.onAction = { [weak self] button in
@@ -495,15 +655,15 @@ extension ChatViewController: MessagesDataSource {
 // MARK: - UIContextMenuInteractionDelegate
 
 extension ChatViewController: UIContextMenuInteractionDelegate {
-
+    
     @available(iOS 13.0, *)
     public func contextMenuInteraction(_ interaction: UIContextMenuInteraction,
                                        configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         let point = interaction.location(in: messagesCollectionView)
         guard let indexPath = messagesCollectionView.indexPathForItem(at: point),
               case let .text(value) = viewModel.messages[indexPath.section].kind else {
-            return nil
-        }
+                  return nil
+              }
 
         let message = viewModel.messages[indexPath.section]
         let testView = FollowMessageView(name: message.sender.displayName, text: value)
@@ -542,10 +702,9 @@ extension ChatViewController: MessageCellDelegate {
         guard let indexPath = messagesCollectionView.indexPath(for: cell),
               case let .photo(item) = viewModel.messages[indexPath.section].kind, let url = item.url,
               let imageSource = BFRBackLoadedImageSource(initialImage: item.placeholderImage, hiResURL: url),
-              let viewController = BFRImageViewController(imageSource: [imageSource])
-        else {
-            return
-        }
+              let viewController = BFRImageViewController(imageSource: [imageSource]) else {
+                  return
+              }
 
         present(viewController, animated: true)
     }
@@ -576,9 +735,9 @@ extension ChatViewController: MessageCellDelegate {
                         }
                         self?.present(avc, animated: true)
                     }
-                } catch {
-                    print(error)
-                }
+                    } catch {
+                        print(error)
+                    }
             }.resume()
         default:
             return
@@ -660,22 +819,22 @@ extension ChatViewController: MessagesDisplayDelegate {
 extension ChatViewController: MessagesLayoutDelegate {
 
     public func cellTopLabelHeight(for message: MessageType,
-                                   at indexPath: IndexPath,
-                                   in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+                            at indexPath: IndexPath,
+                            in messagesCollectionView: MessagesCollectionView) -> CGFloat {
         return viewModel.isPreviousMessageSameDate(at: indexPath.section) ? 0 : 24
     }
 
     public func messageTopLabelHeight(for message: MessageType,
-                                      at indexPath: IndexPath,
-                                      in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+                               at indexPath: IndexPath,
+                               in messagesCollectionView: MessagesCollectionView) -> CGFloat {
         return isFromCurrentSender(message: message) ? 0 : 20
     }
-
+    
     public func footerViewSize(for section: Int, in messagesCollectionView: MessagesCollectionView) -> CGSize {
         guard let keyboard = viewModel.messages[section].keyboard, !keyboard.buttons.isEmpty,
               let layout = messagesCollectionView.collectionViewLayout as? CustomMessagesFlowLayout else {
-            return .zero
-        }
+                  return .zero
+              }
 
         return CGSize(width: layout.itemWidth, height: ActionsReusableView.viewHeight(for: keyboard))
     }
@@ -685,15 +844,14 @@ extension ChatViewController: MessagesLayoutDelegate {
 extension ChatViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     public func imagePickerController(_ picker: UIImagePickerController,
-                                      didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let image = info[.originalImage] as? UIImage,
            let data = image.jpegData(compressionQuality: 0.5),
            let url = info[.imageURL] as? URL {
 
-            let documentURL = url
+            let documentURL = url //urls[0]
             let documentExtension = documentURL.pathExtension
-            let name = documentURL.lastPathComponent.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? "test"
-
+            let name  = documentURL.lastPathComponent.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? "test"
             viewModel.sessionService?.upload(data: data, fileName: name, mimeType: "image/jpeg") { [weak self] result in
                 switch result {
                 case let .success(attachment):
@@ -706,8 +864,7 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
             do { let videoData = try Data(contentsOf: videoURL)
                 let documentURL = videoURL //urls[0]
                 let documentExtension = documentURL.pathExtension
-                let name = documentURL.lastPathComponent.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? "test"
-
+                let name  = documentURL.lastPathComponent.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? "test"
                 if let typeFile = UTType(filenameExtension: documentURL.pathExtension)?.preferredMIMEType {
                     viewModel.sessionService?.upload(data: videoData, fileName: name, mimeType: typeFile) { [weak self] result in
                         switch result {
@@ -742,16 +899,15 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
                 }
             }
         }
-
         picker.dismiss(animated: true)
     }
-
 }
 
 extension ChatViewController: UIDocumentPickerDelegate {
 
     public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
         guard let url = urls.first else { return }
+
         url.startAccessingSecurityScopedResource()
         guard let documentData = try? Data(contentsOf: url) else { return }
         url.stopAccessingSecurityScopedResource()
@@ -759,6 +915,7 @@ extension ChatViewController: UIDocumentPickerDelegate {
         let documentURL = url //urls[0]
         let documentExtension = documentURL.pathExtension
         let name  = documentURL.lastPathComponent.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? "test"
+
         // TODO: - Add methods upload and sendEvent to viewModel
         switch documentExtension {
         case "pdf":
@@ -770,11 +927,10 @@ extension ChatViewController: UIDocumentPickerDelegate {
                     print(error.localizedDescription)
                 }
             }
-
         default:
             if let typeFile = UTType(filenameExtension: documentURL.pathExtension)?.preferredMIMEType {
                 viewModel.sessionService?.upload(data: documentData, fileName: name, mimeType: typeFile) { [weak self] result in
-                    switch result {             
+                    switch result {
                     case let .success(attachment):
                         self?.viewModel.sendEvent(ClientEvent(.file(attachment)))
                     case let .failure(error):
