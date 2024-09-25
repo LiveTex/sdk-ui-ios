@@ -25,6 +25,9 @@ public class ChatViewModel {
     var followMessage: String?
     var messages: [ChatMessage] = []
     var sessionToken: SessionToken?
+    var isTwoPoint = true
+    var point: String? = nil
+    var isSet: VoteResult?
 
     var user = Recipient(senderId: UUID().uuidString, displayName: "")
 
@@ -38,14 +41,13 @@ public class ChatViewModel {
     private var isCanLoadMore = true
 
     private(set) var isEmployeeEstimated = true
+    var isEnableType = false
 
     private let settings = Settings()
 
     // MARK: - Initialization
 
-  public init() {
-
-
+    public init() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(applicationWillEnterForeground),
                                                name: UIApplication.willEnterForegroundNotification,
@@ -89,7 +91,6 @@ public class ChatViewModel {
         sessionService?.onEvent = { [weak self] event in
             self?.didReceive(event: event)
         }
-
         sessionService?.onConnect = { [weak self] in
             self?.onWebsocketStateChanged?(true)
         }
@@ -223,12 +224,12 @@ public class ChatViewModel {
             isCanLoadMore = false
             return
         }
-
         DispatchQueue.global(qos: .userInitiated).async {
+            
             self.isLoadingMore = false
+            //   var newMessages = self.convertMessages(items)
             var newMessages = Array(Set(self.convertMessages(items)).subtracting(self.messages))
             if newMessages.count != self.messages.count || self.messages.count == 1 {
-
                 let currentDate = self.messages.first?.sentDate ?? Date()
                 let receivedDate = newMessages.last?.sentDate ?? Date()
                 newMessages.sort(by: { $0.sentDate < $1.sentDate })
