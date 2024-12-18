@@ -10,7 +10,6 @@ import UIKit
 
 public class EstimationFiveView: UIView {
 
-    var resultVote = 0
     var onEstimateAction: (() -> Void)?
     var firstStarImageView = UIImageView()
     var secondStarImageView = UIImageView()
