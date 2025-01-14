@@ -555,9 +555,24 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
         guard !text.isEmpty else {
             return
         }
-
+        if text.count > 2000 {
+                    inputBar.inputTextView.text = String(text.prefix(2000))
+                }
         messagesCollectionView.scrollToLastItem()
         viewModel.sendEvent(ClientEvent(.typing(text)))
+    }
+    
+    func inputBar(_ inputBar: InputBarAccessoryView, didPaste text: String) {
+        let currentText = inputBar.inputTextView.text ?? ""
+        let newText = currentText + text
+        
+        if newText.count > 2000 {
+            let allowedText = String(newText.prefix(2000))
+            inputBar.inputTextView.text = allowedText
+        } else {
+            inputBar.inputTextView.insertText(text)
+        }
+        return
     }
 
     // MARK: - UICollectionViewDelegate
