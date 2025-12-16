@@ -10,6 +10,7 @@ let package = Package(
         .library(name: "LivetexUICore", targets: ["LivetexUICore"]),
     ],
     dependencies: [
+       // .package(path: "/Users/i/sdk-ios"),
         .package(url: "https://github.com/LiveTex/sdk-ios", branch: "master"),
         .package(url: "https://github.com/MessageKit/MessageKit", from: "4.2.0"),
         .package(url: "https://github.com/onevcat/Kingfisher.git", from: "7.9.1" ),
