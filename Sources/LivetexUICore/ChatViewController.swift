@@ -479,7 +479,6 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
         scrollsToLastItemOnKeyboardBeginsEditing = true
         maintainPositionOnInputBarHeightChanged = true
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap))
-        tapGestureRecognizer.delaysTouchesBegan = true
         doubleEstimationView.addGestureRecognizer(tapGestureRecognizer)
         estimationView.addGestureRecognizer(tapGestureRecognizer)
 
