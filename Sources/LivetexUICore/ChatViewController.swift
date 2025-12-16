@@ -479,7 +479,11 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
         scrollsToLastItemOnKeyboardBeginsEditing = true
         maintainPositionOnInputBarHeightChanged = true
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap))
-        messagesCollectionView.addGestureRecognizer(tapGestureRecognizer)
+        tapGestureRecognizer.delaysTouchesBegan = true
+        doubleEstimationView.addGestureRecognizer(tapGestureRecognizer)
+        estimationView.addGestureRecognizer(tapGestureRecognizer)
+
+        //messagesCollectionView.addGestureRecognizer(tapGestureRecognizer)
     }
     
     @objc func handleTap(gestureRecognizer: UITapGestureRecognizer) {
@@ -1007,8 +1011,8 @@ extension ChatViewController: UIDocumentPickerDelegate {
         let name  = documentURL.lastPathComponent.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? "test"
 
         // TODO: - Add methods upload and sendEvent to viewModel
-        switch documentExtension {
-        case "pdf":
+        switch documentExtension.lowercased() {
+        case "pdf", "PDF":
             viewModel.sessionService?.upload(data: documentData, fileName: name, mimeType: "application/pdf") { [weak self] result in
                 switch result {
                 case let .success(attachment):

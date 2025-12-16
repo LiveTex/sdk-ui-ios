@@ -11,7 +11,7 @@ import Foundation
 extension String {
     
     var isImageUrl: Bool {
-        let extensions: Set<String> = ["png", "jpg", "jpeg", "gif"]
+        let extensions: Set<String> = ["png", "jpg", "jpeg", "gif", "PNG", "JPG", "JPEG", "GIF"]
         return extensions.contains((self as NSString).pathExtension)
     }
 }
