@@ -11,9 +11,7 @@ let package = Package(
     ],
     dependencies: [
        // .package(path: "/Users/i/sdk-ios"),
-        // ВНИМАНИЕ: ветка OPT-6578 — только для предрелизной проверки. Перед PR в master
-        // перевести на версию sdk-ios: .package(url: "https://github.com/LiveTex/sdk-ios", from: "3.0.6")
-        .package(url: "https://github.com/LiveTex/sdk-ios", branch: "OPT-6578"),
+        .package(url: "https://github.com/LiveTex/sdk-ios", from: "3.0.6"),
         .package(url: "https://github.com/MessageKit/MessageKit", from: "4.2.0"),
         .package(url: "https://github.com/onevcat/Kingfisher.git", from: "7.9.1" ),
         .package(url: "https://github.com/stingray06/BFRImageViewer", from: "1.2.11"),
