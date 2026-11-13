@@ -77,8 +77,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/LiveTex/sdk-ios",
       "state" : {
-        "branch" : "master",
-        "revision" : "7296d04ab1d7d6a8210e1cf181d29969a2d16520"
+        "revision" : "1985b4456aa0b713bc232d4064a9c5b119317a50",
+        "version" : "3.0.6"
       }
     }
   ],

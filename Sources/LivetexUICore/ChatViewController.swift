@@ -75,6 +75,7 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
         configureInputBar()
         configureViewModel()
         configureNavigationItem()
+        configureImageLoading()
         
         setAction()
     }
@@ -241,6 +242,11 @@ public class ChatViewController: MessagesViewController, InputBarAccessoryViewDe
     public func configureNavigationItem() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: avatarView)
         navigationItem.titleView = dialogueStateView
+    }
+
+    private func configureImageLoading() {
+        guard LivetexTrust.isEnabled else { return }
+        KingfisherManager.shared.downloader.authenticationChallengeResponder = LivetexImageChallengeResponder.shared
     }
 
     public func configureInputBar() {
@@ -791,10 +797,24 @@ extension ChatViewController: MessageCellDelegate {
         present(safariViewController, animated: true)
     }
 
-    public  func didTapImage(in cell: MessageCollectionViewCell) {
+    public func didTapImage(in cell: MessageCollectionViewCell) {
         guard let indexPath = messagesCollectionView.indexPath(for: cell),
-              case let .photo(item) = viewModel.messages[indexPath.section].kind, let url = item.url,
-              let imageSource = BFRBackLoadedImageSource(initialImage: item.placeholderImage, hiResURL: url),
+              case let .photo(item) = viewModel.messages[indexPath.section].kind, let url = item.url else {
+                  return
+              }
+
+        if LivetexTrust.isEnabled {
+            LivetexTrust.session.dataTask(with: url) { [weak self] data, _, _ in
+                guard let data = data, let image = UIImage(data: data) else { return }
+                DispatchQueue.main.async {
+                    guard let viewController = BFRImageViewController(imageSource: [image]) else { return }
+                    self?.present(viewController, animated: true)
+                }
+            }.resume()
+            return
+        }
+
+        guard let imageSource = BFRBackLoadedImageSource(initialImage: item.placeholderImage, hiResURL: url),
               let viewController = BFRImageViewController(imageSource: [imageSource]) else {
                   return
               }
@@ -811,7 +831,7 @@ extension ChatViewController: MessageCellDelegate {
             guard let attachment = data as? ChatViewModel.AttachmentFile, let url = attachment.url
             else { return }
             dialogueStateView.setConnectionInProgress(withKind: .download)
-            URLSession.shared.dataTask(with: url) { data, response, error in
+            LivetexTrust.session.dataTask(with: url) { data, response, error in
                 guard let data = data, error == nil else { return }
                 let tmpURL = FileManager.default.temporaryDirectory.appendingPathComponent((attachment.name ?? url.pathExtension) + "." + (url.pathExtension))
                 do {
